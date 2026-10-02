@@ -253,6 +253,7 @@
       <div class="field">
         <div class="field-label">Team profile</div>
         <div class="chips profile-chips" id="profileChips"></div>
+        <p class="pf-locked" id="pfLocked" hidden>This is a built-in profile and can't be changed. Tap <b>+ New profile</b> to make an editable copy.</p>
         <div class="profile-edit">
           <div class="text-row">
             <label>Profile name<input type="text" id="pfName" maxlength="40" autocomplete="off"></label>
@@ -275,7 +276,6 @@
             <button type="button" class="btn small ghost" id="pfLogoRemove">No logo</button>
           </div>
           <div class="profile-actions">
-            <button type="button" class="btn small ghost" id="pfReset">Reset to original</button>
             <button type="button" class="btn small ghost danger" id="pfDelete">Delete profile</button>
             <button type="button" class="btn small ghost" id="pfExport">Download profiles.json</button>
             <label class="btn small ghost file-btn">

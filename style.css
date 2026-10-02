@@ -524,3 +524,6 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 }
 .tab.on { background: var(--grad-diag); color: var(--white); }
 .tab-panel { display: flex; flex-direction: column; gap: 20px; }
+.pf-locked { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; }
+.pf-locked b { color: var(--white); }
+.profile-edit.locked .text-row, .profile-edit.locked .color-row, .profile-edit.locked .logo-row .file-btn { opacity: .45; pointer-events: none; }
