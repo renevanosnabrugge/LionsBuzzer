@@ -25,7 +25,7 @@ On a single device you can also upload a file under *Settings → Sounds*, which
 ### Team profiles
 
 Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
-Open *Settings → Team profile* to select, create, edit or delete a profile.
+Open *Settings → Team* to select, create, edit or delete a profile.
 
 - The built-in profiles are in `profiles.json`, with logos in `logos/`. **YetiLions** is the default, and **Dordrecht Lions** (colours from its style book) is the second profile.
 - A static website can't save files on the server, so changes made in the app are saved on that device.

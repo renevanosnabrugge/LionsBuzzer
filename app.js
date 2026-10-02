@@ -469,7 +469,17 @@
 
   // ---------- Settings sheet ----------
   const sheet = $('settings');
-  $('settingsBtn').addEventListener('click', () => { renderSettings(); sheet.showModal(); });
+  // Tabs: Match (used most), Sounds, Team. Settings always opens on Match.
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('on', t.dataset.tab === name);
+      t.setAttribute('aria-selected', t.dataset.tab === name);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => { p.hidden = p.dataset.panel !== name; });
+    sheet.querySelector('.sheet-inner').scrollTop = 0;
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+  $('settingsBtn').addEventListener('click', () => { renderSettings(); showTab('match'); sheet.showModal(); sheet.scrollTop = 0; });
   sheet.addEventListener('click', e => { if (e.target === sheet) sheet.close(); });
 
   const fmtSetting = {

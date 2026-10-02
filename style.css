@@ -506,3 +506,21 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
   .sound-row .file-btn { grid-area: 3 / 1; }
   .sound-row .use-builtin { grid-area: 3 / 2 / 4 / 4; }
 }
+
+/* ---------- Settings tabs ---------- */
+.tabs {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  padding: 6px;
+  border-radius: 18px;
+  background: var(--navy-lo);
+}
+.tab {
+  min-height: 52px;
+  border: 0; border-radius: 13px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 800; font-size: 19px; letter-spacing: .14em; text-transform: uppercase;
+  cursor: pointer;
+}
+.tab.on { background: var(--grad-diag); color: var(--white); }
+.tab-panel { display: flex; flex-direction: column; gap: 20px; }
