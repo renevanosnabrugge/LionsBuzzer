@@ -22,6 +22,11 @@
         id: 'dordrecht-lions', name: 'Dordrecht Lions', title: 'DORDRECHT LIONS', subtitle: 'IJSHOCKEY',
         logo: 'logos/dordrecht-lions.png',
         colors: { background: '#103073', text: '#ffffff', primary: '#0053a1', secondary: '#007d32', accent: '#568ec2' }
+      },
+      {
+        id: 'neutral', name: 'Neutral', title: 'ICE HOCKEY', subtitle: 'MATCH CLOCK',
+        logo: 'logos/neutral.svg',
+        colors: { background: '#0b1c20', text: '#ffffff', primary: '#006d75', secondary: '#00525a', accent: '#ea7200' }
       }
     ]
   };
@@ -243,15 +248,85 @@
     });
   }
 
-  function exportProfiles() {
-    const data = { version: 1, default: active().id, profiles: list() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  function download(blob, name) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'profiles.json';
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  // All profiles in one file, logos embedded: for moving profiles to another device.
+  function exportProfiles() {
+    const data = { version: 1, default: active().id, profiles: list() };
+    download(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), 'profiles.json');
+  }
+
+  // A zip to unpack into the repository root: profiles.json with the built-in profiles plus
+  // the ones made on this device (which then become built-in), and their logos as files.
+  function exportForWebsite() {
+    const enc = new TextEncoder();
+    const files = [];
+    const used = new Set(builtins.map(b => b.id));
+    const slug = name => {
+      const base = (name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'team');
+      let id = base, n = 2;
+      while (used.has(id)) id = base + '-' + n++;
+      used.add(id);
+      return id;
+    };
+    const added = local.added.map(p => {
+      const q = Object.assign({}, p, { id: slug(p.name) });
+      const m = /^data:image\/(png|jpe?g|webp|svg\+xml);base64,(.*)$/.exec(p.logo || '');
+      if (m) {
+        const ext = m[1] === 'svg+xml' ? 'svg' : m[1].replace('jpeg', 'jpg');
+        const path = 'logos/' + q.id + '.' + ext;
+        files.push({ name: path, data: Uint8Array.from(atob(m[2]), c => c.charCodeAt(0)) });
+        q.logo = path;
+      }
+      return q;
+    });
+    const data = { version: 1, default: defaultId, profiles: builtins.concat(added) };
+    files.unshift({ name: 'profiles.json', data: enc.encode(JSON.stringify(data, null, 2) + '\n') });
+    files.push({ name: 'README.txt', data: enc.encode(
+      'Unzip into the root of the LionsBuzzer repository, replacing profiles.json,\n' +
+      'then commit and push. The profiles from this device become built-in profiles\n' +
+      'on the website (' + added.map(p => p.name).join(', ') + ').\n') });
+    download(zip(files), 'lionsbuzzer-profiles.zip');
+  }
+
+  // Minimal zip writer (no compression), enough for a few small files.
+  function zip(files) {
+    const crcTable = new Uint32Array(256).map((_, n) => {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      return c;
+    });
+    const crc32 = d => { let c = 0xffffffff; for (let i = 0; i < d.length; i++) c = crcTable[(c ^ d[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+    const enc = new TextEncoder();
+    const parts = [], central = [];
+    let offset = 0;
+    files.forEach(f => {
+      const name = enc.encode(f.name), crc = crc32(f.data), size = f.data.length;
+      const local = new DataView(new ArrayBuffer(30));
+      local.setUint32(0, 0x04034b50, true); local.setUint16(4, 20, true);
+      local.setUint32(14, crc, true); local.setUint32(18, size, true); local.setUint32(22, size, true);
+      local.setUint16(26, name.length, true);
+      parts.push(local.buffer, name, f.data);
+      const cd = new DataView(new ArrayBuffer(46));
+      cd.setUint32(0, 0x02014b50, true); cd.setUint16(4, 20, true); cd.setUint16(6, 20, true);
+      cd.setUint32(16, crc, true); cd.setUint32(20, size, true); cd.setUint32(24, size, true);
+      cd.setUint16(28, name.length, true); cd.setUint32(42, offset, true);
+      central.push(cd.buffer, name);
+      offset += 30 + name.length + size;
+    });
+    const cdSize = central.reduce((n, p) => n + p.byteLength, 0);
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true);
+    end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+    end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+    return new Blob(parts.concat(central, [end.buffer]), { type: 'application/zip' });
   }
 
   async function importProfiles(file) {
@@ -295,6 +370,7 @@
   $('pfLogoRemove').addEventListener('click', () => update({ logo: '' }));
   $('pfDelete').addEventListener('click', deleteProfile);
   $('pfExport').addEventListener('click', exportProfiles);
+  $('pfExportSite').addEventListener('click', exportForWebsite);
   $('pfImport').addEventListener('change', e => {
     const file = e.target.files[0];
     e.target.value = '';
@@ -328,6 +404,9 @@
         Object.values(stored.edits || {}).forEach(e => {
           if (isBuiltin(e.id)) local.added.push(clean(Object.assign({}, e, { id: null, name: e.name + ' (my changes)' })));
         });
+        // A profile exported for the website and published is now built-in: drop the device copy.
+        const same = (a, b) => a.name === b.name && JSON.stringify(a.colors) === JSON.stringify(b.colors);
+        local.added = local.added.filter(a => !builtins.some(b => same(a, b)));
       }
     } catch (e) {}
     apply(active());

@@ -29,6 +29,20 @@
         "secondary": "#007d32",
         "accent": "#568ec2"
       }
+    },
+    {
+      "id": "neutral",
+      "name": "Neutral",
+      "title": "ICE HOCKEY",
+      "subtitle": "MATCH CLOCK",
+      "logo": "logos/neutral.svg",
+      "colors": {
+        "background": "#0b1c20",
+        "text": "#ffffff",
+        "primary": "#006d75",
+        "secondary": "#00525a",
+        "accent": "#ea7200"
+      }
     }
   ]
 }
