@@ -18,7 +18,7 @@ Keyboard: `Space` start/pause · `N` next interval · `B` buzzer · `G` goal hor
 
 ### Using real recordings
 
-The built-in buzzer and goal horn are synthesized. To use real recordings for everyone, add them to `site/sounds/`:
+The built-in buzzer and goal horn are synthesized. To use real recordings for everyone, add them to `sounds/`:
 `goal-horn.mp3` replaces the Goal horn and `buzzer.mp3` replaces the Buzzer. Only use recordings you have the rights to (CC0 / public domain).
 On a single device you can also upload a file under *Settings → Sounds*, which takes priority over both.
 
@@ -27,27 +27,26 @@ On a single device you can also upload a file under *Settings → Sounds*, which
 Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
 Open *Settings → Team profile* to select, create, edit or delete a profile.
 
-- The built-in profiles are in `site/profiles.json`, with logos in `site/logos/`. **YetiLions** is the default, and **Dordrecht Lions** (colours from its style book) is the second profile.
+- The built-in profiles are in `profiles.json`, with logos in `logos/`. **YetiLions** is the default, and **Dordrecht Lions** (colours from its style book) is the second profile.
 - A static website can't save files on the server, so changes made in the app are saved on that device.
-- To publish profiles for everyone, tap **Download profiles.json** and commit that file as `site/profiles.json`.
+- To publish profiles for everyone, tap **Download profiles.json** and commit that file as `profiles.json`.
 - **Load profiles.json** loads profiles from a file onto another device.
-- Uploaded logos are embedded in the downloaded file. You can also put a logo in `site/logos/` and refer to it by its path, as the built-in profiles do.
+- Uploaded logos are embedded in the downloaded file. You can also put a logo in `logos/` and refer to it by its path, as the built-in profiles do.
 
 ## Deploying to GitHub Pages
 
-The workflow in `.github/workflows/pages.yml` publishes the `site/` folder whenever `main` changes. One-time setup:
+The app is in the root of the repository, so GitHub Pages serves it straight from `main`
+(**Settings → Pages → Deploy from a branch → `main` / root**). Every merge to `main` is published to
+`https://renevanosnabrugge.github.io/LionsBuzzer/`.
 
-1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Merge to `main`, or run the *Deploy to GitHub Pages* workflow by hand from the Actions tab.
-
-The app will be live at `https://renevanosnabrugge.github.io/LionsBuzzer/`.
+To use a custom domain later, enter it under **Settings → Pages → Custom domain** and point the domain's DNS at GitHub Pages; GitHub then adds a `CNAME` file to the repository root. All paths in the app are relative, so it works on a custom domain without changes.
 
 ## Running locally
 
-Open `site/index.html` in a browser, or serve the folder, for example with `python3 -m http.server -d site`.
+Open `index.html` in a browser, or serve the folder, for example with `python3 -m http.server`.
 
 ## Notes
 
 - The buzzer and goal horn are synthesized in the browser (Web Audio), so there are no audio files and no copyright issues.
 - On iPhone/iPad, sound plays even with the silent switch on (iOS 17+). Turn the device volume up, and use a Bluetooth speaker or the rink PA for real volume.
-- Fonts: Anton and Barlow Condensed (SIL Open Font License, see `site/fonts/`).
+- Fonts: Anton and Barlow Condensed (SIL Open Font License, see `fonts/`).

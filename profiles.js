@@ -2,7 +2,7 @@
 //
 // Built-in profiles come from profiles.json (published with the site). Changes made in the
 // app (new, edited or deleted profiles) are saved on this device. "Download profiles.json"
-// exports all profiles; put that file in site/ to publish them for everyone.
+// exports all profiles; commit that file to the repository root to publish them for everyone.
 (() => {
   'use strict';
 
