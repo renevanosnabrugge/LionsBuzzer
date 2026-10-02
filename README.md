@@ -1,24 +1,39 @@
-# Lions Buzzer 🦁🏒
+# Yeti Lion Alliance Buzzer 🦁🏒
 
-A very simple, loud interval buzzer for ice hockey (ijshockey) training and games.
+A loud interval buzzer and match clock for ice hockey, in the Yeti Lion Alliance colours.
+It's built for an iPad and also works on phones and laptops.
 
-Open `index.html` in any browser (phone, tablet or laptop): no install and no internet needed.
+## Features
 
-## Usage
+- **Match clock**: configurable match length. Shows tenths in the last minute and plays the end-of-match sound at full time.
+- **Interval clock**: configurable interval, with a countdown ring that pulses in the last 5 seconds. The interval sound plays and the screen flashes at every interval.
+- **Next interval**: sounds the signal right away and starts a new interval. The match clock keeps running.
+- **Sounds**: a loud arena **buzzer** (default for intervals) and a **lion roar** (default for the end of the match). You can upload your own mp3/wav, which is remembered on the device. Each sound has a big tap pad; tap again to stop it.
+- Sound length and volume are adjustable. All settings are remembered on the device.
+- Touch-first: large buttons, hold-to-repeat steppers, no zoom on double-tap. Works in landscape and portrait, and keeps the screen awake while the clock runs.
+- Works offline after the first visit, and installs to the home screen (Share → *Add to Home Screen* on iPad).
 
-1. Set the interval in seconds, or tap a preset (30s, 1 min, 1:30, 2 min, 3 min).
-2. Press **START**. The big clock counts down, and the buzzer sounds at every interval.
-3. Press **STOP** to stop. **BUZZ!** sounds the buzzer by hand at any time.
+Keyboard: `Space` start/pause · `N` next interval · `B` buzzer · `R` roar.
 
-Options:
-- **Buzzer length**: 0.5–5 seconds.
-- **Volume**: turn your device and speaker all the way up, too.
-- **Custom sound**: load your own mp3/wav (for example an arena horn recording) to use instead of the built-in horn.
+### Using the real club logo
 
-Keyboard: `Space` = start/stop, `B` = buzz.
+The emblem in the app is a simplified drawing. To use the official logo, add it as `site/logo.png` (square or wide, transparent background). The header picks it up automatically.
 
-The built-in sound is a synthesized arena-style horn (stacked, overdriven sawtooth tones) in the spirit of an NHL rink buzzer. The screen flashes red during a buzz and stays awake while the timer is running.
+## Deploying to GitHub Pages
 
-## Hosting (optional)
+The workflow in `.github/workflows/pages.yml` publishes the `site/` folder whenever `main` changes. One-time setup:
 
-Turn on GitHub Pages for this repository (Settings → Pages → deploy from branch) to use it from any phone via a URL.
+1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Merge to `main`, or run the *Deploy to GitHub Pages* workflow by hand from the Actions tab.
+
+The app will be live at `https://renevanosnabrugge.github.io/LionsBuzzer/`.
+
+## Running locally
+
+Open `site/index.html` in a browser, or serve the folder, for example with `python3 -m http.server -d site`.
+
+## Notes
+
+- The buzzer and roar are synthesized in the browser (Web Audio), so there are no audio files and no copyright issues.
+- On iPhone/iPad, sound plays even with the silent switch on (iOS 17+). Turn the device volume up, and use a Bluetooth speaker or the rink PA for real volume.
+- Fonts: Anton and Barlow Condensed (SIL Open Font License, see `site/fonts/`).

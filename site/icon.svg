@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc6f2"/><stop offset="1" stop-color="#1170b8"/></linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ad27c"/><stop offset="1" stop-color="#0e7e3f"/></linearGradient>
+    <linearGradient id="e" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#10a1dc"/><stop offset=".55" stop-color="#0e7e3f"/><stop offset="1" stop-color="#79be60"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#10294b"/>
+  <g transform="translate(16 70) scale(2)">
+    <polygon points="120,30 236,116 120,202 4,116" fill="#0b1d37" stroke="url(#e)" stroke-width="8" stroke-linejoin="round"/>
+    <polygon points="120,44 218,116 120,188 22,116" fill="#fff"/>
+    <polygon points="120,53 120,179 34,116" fill="url(#b)"/>
+    <polygon points="120,53 206,116 120,179" fill="url(#g)"/>
+    <path d="M90 56 L84 18 L104 34 L120 6 L136 34 L156 18 L150 56 Z" fill="#fff" stroke="#0b1d37" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M94 90h17l9 22 9-22h17l-18 36v26h-16v-26z" fill="#fff" stroke="#0b1d37" stroke-width="4" stroke-linejoin="round" transform="translate(-14 0)"/>
+    <path d="M136 90h16v48h22v14h-38z" fill="#fff" stroke="#0b1d37" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+</svg>
