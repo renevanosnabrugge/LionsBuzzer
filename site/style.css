@@ -139,6 +139,9 @@ svg { display: block; }
 #matchState { color: var(--green); }
 .paused #matchState { color: #ffd166; }
 
+.match-time.jump { animation: jump .45s ease-out; }
+@keyframes jump { 0% { color: var(--green); transform: scale(1.06); } 100% { color: inherit; transform: none; } }
+
 /* Interval ring */
 .ring-wrap {
   --ring: min(78vw, 34vh, 420px);

@@ -7,13 +7,20 @@ It's built for an iPad and also works on phones and laptops.
 
 - **Match clock**: configurable match length. Shows tenths in the last minute and plays the end-of-match sound at full time.
 - **Interval clock**: configurable interval, with a countdown ring that pulses in the last 5 seconds. The interval sound plays and the screen flashes at every interval.
-- **Next interval**: sounds the signal right away and starts a new interval. The match clock keeps running.
+- **Clock direction**: count down (default) or count up, set in the settings.
+- **Next interval**: moves the clock to the next whole interval, to keep it in line with the rink clock. Counting down with a 1-minute interval: 14:32 → 14:00, 9:01 → 9:00, 14:00 → 13:00. Counting up: 5:28 → 6:00. This is a silent correction; the clock keeps its running or paused state. Intervals always line up with the clock as displayed.
 - **Sounds**: a loud arena **buzzer** (default for intervals) and a **lion roar** (default for the end of the match). You can upload your own mp3/wav, which is remembered on the device. Each sound has a big tap pad; tap again to stop it.
 - Sound length and volume are adjustable. All settings are remembered on the device.
 - Touch-first: large buttons, hold-to-repeat steppers, no zoom on double-tap. Works in landscape and portrait, and keeps the screen awake while the clock runs.
 - Works offline after the first visit, and installs to the home screen (Share → *Add to Home Screen* on iPad).
 
 Keyboard: `Space` start/pause · `N` next interval · `B` buzzer · `R` roar.
+
+### Using real recordings
+
+The built-in buzzer and roar are synthesized. To use real recordings for everyone, add them to `site/sounds/`:
+`lion-roar.mp3` replaces the Lion roar and `buzzer.mp3` replaces the Buzzer. Only use recordings you have the rights to (CC0 / public domain).
+On a single device you can also load a file under *Settings → Custom sound*.
 
 ### Using the real club logo
 
