@@ -9,9 +9,9 @@
 
   const $ = id => document.getElementById(id);
 
-  // Used when profiles.json can't be fetched (e.g. opened from file://). Keep in sync with profiles.json.
+  // Used only when profiles.json can't be fetched (e.g. opened from file://); profiles.json is the real list.
   const FALLBACK = {
-    default: 'yetilions',
+    default: 'dordrecht-lions',
     profiles: [
       {
         id: 'yetilions', name: 'YetiLions', title: 'YETI LION', subtitle: 'ALLIANCE',
@@ -178,9 +178,15 @@
   // ---------- Settings UI ----------
   function render() {
     const p = active();
+    // Built-in teams in a dropdown; profiles made on this device as buttons after it.
     const chips = $('profileChips');
-    chips.textContent = '';
-    list().forEach(q => {
+    const sel = $('profileSelect');
+    sel.textContent = '';
+    if (!isBuiltin(p.id)) sel.add(new Option('Teams…', '', true, true));
+    builtins.forEach(b => sel.add(new Option(b.name, b.id, false, b.id === p.id)));
+    sel.parentElement.classList.toggle('on', isBuiltin(p.id));
+    chips.querySelectorAll('button').forEach(b => b.remove());
+    local.added.forEach(q => {
       const b = document.createElement('button');
       b.type = 'button';
       b.textContent = q.name;
@@ -369,6 +375,7 @@
   });
   $('pfLogoRemove').addEventListener('click', () => update({ logo: '' }));
   $('pfDelete').addEventListener('click', deleteProfile);
+  $('profileSelect').addEventListener('change', e => { if (e.target.value) select(e.target.value); });
   $('pfExport').addEventListener('click', exportProfiles);
   $('pfExportSite').addEventListener('click', exportForWebsite);
   $('pfImport').addEventListener('change', e => {

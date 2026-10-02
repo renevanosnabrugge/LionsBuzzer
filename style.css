@@ -527,3 +527,54 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 .pf-locked { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; }
 .pf-locked b { color: var(--white); }
 .profile-edit.locked .text-row, .profile-edit.locked .color-row, .profile-edit.locked .logo-row .file-btn { opacity: .45; pointer-events: none; }
+
+/* ---------- Header actions ---------- */
+.top-actions { display: flex; gap: 10px; flex: none; }
+@media (max-width: 560px) {
+  .top-actions { gap: 6px; }
+  .top-actions .icon-btn { width: 48px; height: 48px; border-radius: 14px; }
+  .top-actions .icon-btn svg { width: 24px; height: 24px; }
+}
+
+/* ---------- Team picker ---------- */
+.profile-select { position: relative; flex: 1 1 260px; display: block; }
+.profile-select select {
+  -webkit-appearance: none; appearance: none;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 48px 0 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .05);
+  color: var(--white);
+  font: inherit; font-weight: 800; font-size: 19px; letter-spacing: .04em;
+  cursor: pointer;
+}
+.profile-select::after {
+  content: ""; position: absolute; right: 18px; top: 50%;
+  width: 10px; height: 10px; margin-top: -8px;
+  border-right: 3px solid currentColor; border-bottom: 3px solid currentColor;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.profile-select.on select { background: var(--grad-diag); border-color: transparent; }
+.profile-select select option { color: #000; background: #fff; }
+
+/* ---------- Help and About pages ---------- */
+.sheet.page { width: min(820px, calc(100vw - 24px)); }
+.sheet.page .sheet-inner { max-height: calc(100dvh - 26px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.sheet.page h3 { margin: 0 0 10px; font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: .04em; color: var(--green); }
+.sheet.page p, .sheet.page li { font-size: 19px; line-height: 1.45; font-weight: 600; }
+.sheet.page p { margin: 0; }
+.sheet.page ul { margin: 10px 0 0; padding-left: 22px; display: grid; gap: 6px; }
+.sheet.page b { color: var(--white); }
+.help-sec { padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.help-sec:last-child { border-bottom: 0; padding-bottom: 0; }
+.help-sec img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .3); }
+#about .sheet-inner { gap: 18px; text-align: center; align-items: center; }
+.about-logo { height: 160px; width: auto; filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .4)); }
+.about-lead { font-size: 22px !important; }
+.coffee-btn { text-decoration: none; color: var(--white); padding: 0 34px; font-size: 30px !important; }
+.sheet.page a { color: var(--green); }
+.about-maker { color: var(--muted); }
+#about .sheet-head { align-self: stretch; text-align: left; }
