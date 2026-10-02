@@ -10,7 +10,8 @@
     intervalSound: 'buzzer',
     endSound: 'roar',
     length: 2,
-    volume: 100
+    volume: 100,
+    direction: 'desc'
   };
   const S = Object.assign({}, DEFAULTS);
   try { Object.assign(S, JSON.parse(localStorage.getItem('ylBuzzer') || '{}')); } catch (e) {}
@@ -190,21 +191,32 @@
     return handle(a, out, sources, T + 0.1);
   }
 
-  function playCustom(vol) {
-    if (!customBuffer) return null;
+  function playBuffer(buffer, vol) {
     const a = audio();
-    const src = a.createBufferSource(); src.buffer = customBuffer;
+    const src = a.createBufferSource(); src.buffer = buffer;
     const out = a.createGain(); out.gain.value = vol;
     src.connect(out).connect(a.destination);
     src.start();
-    return handle(a, out, [src], customBuffer.duration);
+    return handle(a, out, [src], buffer.duration);
+  }
+
+  // Real recordings shipped with the site replace the synthesized sounds:
+  // drop sounds/lion-roar.mp3 or sounds/buzzer.mp3 into the site folder.
+  const recorded = {};
+  async function loadRecorded(name, url) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return;
+      recorded[name] = await audio().decodeAudioData(await res.arrayBuffer());
+    } catch (e) { /* not present (or opened from file://): keep the synthesized sound */ }
   }
 
   function play(name) {
     const vol = S.volume / 100;
+    if (recorded[name]) return playBuffer(recorded[name], vol);
     if (name === 'buzzer') return playBuzzer(S.length, vol);
     if (name === 'roar') return playRoar(S.length, vol);
-    if (name === 'custom') return playCustom(vol);
+    if (name === 'custom' && customBuffer) return playBuffer(customBuffer, vol);
     return null;
   }
 
@@ -246,11 +258,26 @@
     running: false,
     acc: 0,          // ms elapsed before the current run segment
     startedAt: 0,    // performance.now() when the current segment started
-    intStart: 0,     // elapsed ms at which the current interval began
-    intNo: 1,
+    lastIdx: 0,      // interval index at the last tick, to detect boundaries
     ended: false
   };
   const elapsed = () => st.acc + (st.running ? performance.now() - st.startedAt : 0);
+  const desc = () => S.direction !== 'asc';
+
+  // Intervals line up with the clock as displayed: counting down they end at
+  // whole multiples of the interval of time remaining (14:00, 13:00, ...),
+  // counting up at multiples of time played (1:00, 2:00, ...).
+  // Returns the current interval's index and its [lo, hi) range in elapsed ms.
+  function slot(e) {
+    const M = matchMs(), I = intervalMs();
+    if (desc()) {
+      const k = Math.ceil((M - e) / I);
+      const idx = Math.max(0, Math.ceil(M / I) - k);
+      return { idx, lo: M - Math.min(k * I, M), hi: Math.min(M, M - (k - 1) * I) };
+    }
+    const idx = Math.floor(e / I);
+    return { idx, lo: idx * I, hi: Math.min(M, (idx + 1) * I) };
+  }
 
   let wakeLock = null;
   async function keepAwake(on) {
@@ -283,7 +310,7 @@
 
   function reset(ask) {
     if (ask && elapsed() > 0 && !st.ended && !confirm('Reset the match clock?')) return;
-    Object.assign(st, { running: false, acc: 0, startedAt: 0, intStart: 0, intNo: 1, ended: false });
+    Object.assign(st, { running: false, acc: 0, startedAt: 0, lastIdx: 0, ended: false });
     $('fulltime').hidden = true;
     keepAwake(false);
     render();
@@ -294,11 +321,17 @@
     flash();
   }
 
+  // Jump the clock to the end of the current interval (e.g. 14:32 -> 14:00),
+  // to bring it back in line with the rink clock. Silent: it is a correction.
   function nextInterval() {
     if (st.ended) return;
-    st.intStart = elapsed();
-    st.intNo++;
-    intervalSignal();
+    const target = slot(elapsed()).hi;
+    if (target >= matchMs()) { endMatch(); return; }
+    st.acc = target;
+    st.startedAt = performance.now();
+    st.lastIdx = slot(target).idx;
+    const c = $('matchClock');
+    c.classList.remove('jump'); void c.offsetWidth; c.classList.add('jump');
     render();
   }
 
@@ -309,7 +342,8 @@
     keepAwake(false);
     play(S.endSound);
     flash();
-    $('ftSub').textContent = S.matchMin + ' min · ' + st.intNo + (st.intNo === 1 ? ' interval' : ' intervals');
+    const n = Math.ceil(matchMs() / intervalMs());
+    $('ftSub').textContent = S.matchMin + ' min · ' + n + (n === 1 ? ' interval' : ' intervals');
     setTimeout(() => { if (st.ended) $('fulltime').hidden = false; }, 600);
     render();
   }
@@ -329,25 +363,23 @@
         endMatch();
         return;
       }
-      let fired = false;
-      while (e >= st.intStart + intervalMs()) {
-        st.intStart += intervalMs();
-        st.intNo++;
-        fired = true;
-      }
-      if (fired) intervalSignal();
+      const idx = slot(e).idx;
+      if (idx > st.lastIdx) intervalSignal();
+      st.lastIdx = idx;
     }
     render();
   }
 
   // ---------- Rendering ----------
-  const mmss = ms => {
-    const s = Math.max(0, Math.ceil(ms / 1000));
+  const clock = (ms, round) => {
+    const s = Math.max(0, round(ms / 1000));
     return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
   };
-  const matchFmt = ms => {
-    if (ms > 0 && ms < 60000) return (Math.ceil(ms / 100) / 10).toFixed(1);
-    return mmss(ms);
+  const mmss = ms => clock(ms, Math.ceil);
+  const matchFmt = (left, played) => {
+    if (!desc()) return clock(played, Math.floor);
+    if (left > 0 && left < 60000) return (Math.ceil(left / 100) / 10).toFixed(1);
+    return mmss(left);
   };
 
   const ring = $('ringFill');
@@ -361,19 +393,20 @@
 
   function render() {
     const e = Math.min(elapsed(), matchMs());
-    const mLeft = matchMs() - e;
-    const intEnd = Math.min(st.intStart + intervalMs(), matchMs());
-    const intLen = Math.max(1, intEnd - st.intStart);
-    const iLeft = Math.max(0, intEnd - e);
+    const cur = slot(Math.min(e, matchMs() - 1));
+    const len = Math.max(1, cur.hi - cur.lo);
+    const iLeft = Math.max(0, cur.hi - e);
+    const iDone = Math.max(0, e - cur.lo);
 
-    setText('matchClock', matchFmt(mLeft));
-    setText('intClock', mmss(iLeft));
-    setText('intNo', String(st.intNo));
+    setText('matchClock', matchFmt(matchMs() - e, e));
+    setText('intClock', desc() ? mmss(iLeft) : clock(iDone, Math.floor));
+    setText('intNo', String(cur.idx + 1));
     setText('intLen', 'every ' + mmss(intervalMs()));
-    setText('matchLen', S.matchMin + ' min');
+    setText('matchLen', S.matchMin + ' min ' + (desc() ? '▼' : '▲'));
     setText('matchState', st.ended ? 'Full time' : st.running ? 'Running' : e > 0 ? 'Paused' : 'Ready');
     $('matchProgress').style.width = (e / matchMs() * 100).toFixed(2) + '%';
-    ring.style.strokeDashoffset = (C * (1 - iLeft / intLen)).toFixed(1);
+    const frac = desc() ? iLeft / len : iDone / len;
+    ring.style.strokeDashoffset = (C * (1 - frac)).toFixed(1);
     $('ringWrap').classList.toggle('warn', st.running && iLeft <= 5000 && iLeft > 0);
     document.body.classList.toggle('paused', !st.running && e > 0 && !st.ended);
 
@@ -452,6 +485,7 @@
   function setSetting(key, v) {
     S[key] = v;
     saveSettings();
+    if (!st.ended) st.lastIdx = slot(Math.min(elapsed(), matchMs() - 1)).idx;
     renderSettings();
     render();
   }
@@ -555,5 +589,7 @@
   renderSettings();
   renderCustom();
   restoreCustom();
+  loadRecorded('roar', 'sounds/lion-roar.mp3');
+  loadRecorded('buzzer', 'sounds/buzzer.mp3');
   render();
 })();
