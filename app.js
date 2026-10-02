@@ -356,9 +356,11 @@
     const s = Math.max(0, round(ms / 1000));
     return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
   };
+  // Seconds are rounded up in both directions, so a 5-second interval reads
+  // 5-4-3-2-1 counting down and 1-2-3-4-5 counting up, with no extra 0:00 second.
   const mmss = ms => clock(ms, Math.ceil);
   const matchFmt = (left, played) => {
-    if (!desc()) return clock(played, Math.floor);
+    if (!desc()) return clock(played, Math.ceil);
     if (left > 0 && left < 60000) return (Math.ceil(left / 100) / 10).toFixed(1);
     return mmss(left);
   };
@@ -380,7 +382,7 @@
     const iDone = Math.max(0, e - cur.lo);
 
     setText('matchClock', matchFmt(matchMs() - e, e));
-    setText('intClock', desc() ? mmss(iLeft) : clock(iDone, Math.floor));
+    setText('intClock', desc() ? mmss(iLeft) : clock(iDone, Math.ceil));
     setText('intNo', String(cur.idx + 1));
     setText('intLen', 'every ' + mmss(intervalMs()));
     setText('matchLen', S.matchMin + ' min ' + (desc() ? '▼' : '▲'));
