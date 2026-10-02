@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="YL Buzzer">
 <title>Yeti Lion Buzzer</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -20,16 +20,16 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#4cc6f2"/><stop offset="1" stop-color="#1170b8"/>
+      <stop offset="0" style="stop-color:var(--blue-l)"/><stop offset="1" style="stop-color:var(--blue-d)"/>
     </linearGradient>
     <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9ad27c"/><stop offset="1" stop-color="#0e7e3f"/>
+      <stop offset="0" style="stop-color:var(--green)"/><stop offset="1" style="stop-color:var(--green-d)"/>
     </linearGradient>
     <linearGradient id="gEdge" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#10a1dc"/><stop offset=".55" stop-color="#0e7e3f"/><stop offset="1" stop-color="#79be60"/>
+      <stop offset="0" style="stop-color:var(--blue)"/><stop offset=".55" style="stop-color:var(--green-d)"/><stop offset="1" style="stop-color:var(--green)"/>
     </linearGradient>
     <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#10a1dc"/><stop offset=".6" stop-color="#0e7e3f"/><stop offset="1" stop-color="#79be60"/>
+      <stop offset="0" style="stop-color:var(--blue)"/><stop offset=".6" style="stop-color:var(--green-d)"/><stop offset="1" style="stop-color:var(--green)"/>
     </linearGradient>
   </defs>
   <symbol id="emblem" viewBox="0 0 240 204">
@@ -40,7 +40,7 @@
     <path d="M90 56 L84 18 L104 34 L120 6 L136 34 L156 18 L150 56 Z" fill="#fff" stroke="#0b1d37" stroke-width="4" stroke-linejoin="round"/>
     <rect x="90" y="46" width="60" height="8" fill="#0b1d37" opacity=".25"/>
     <text x="120" y="160" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="96"
-          fill="#f4f7fb" stroke="#0b1d37" stroke-width="5" paint-order="stroke" letter-spacing="-2">YL</text>
+          fill="#f4f7fb" stroke="#0b1d37" stroke-width="5" paint-order="stroke" letter-spacing="-2" class="emblem-initials">YL</text>
   </symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></symbol>
@@ -56,13 +56,13 @@
   <header class="top">
     <div class="brand">
       <span class="emblem-wrap">
-        <img class="emblem-img" src="logo.png" alt="" hidden>
-        <svg class="emblem" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
+        <img class="emblem-img" id="logoImg" alt="" hidden>
+        <svg class="emblem" id="logoFallback" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
       </span>
       <div class="wordmark">
         <div class="wm-bar"></div>
-        <div class="wm-name">YETI LION</div>
-        <div class="wm-sub">ALLIANCE <span>· BUZZER</span></div>
+        <div class="wm-name" id="wmTitle">YETI LION</div>
+        <div class="wm-sub"><span id="wmSub">ALLIANCE</span> <span class="wm-tag">· BUZZER</span></div>
       </div>
     </div>
     <button class="icon-btn" id="settingsBtn" aria-label="Settings">
@@ -118,7 +118,8 @@
 <div class="flash" id="flash"></div>
 
 <div class="fulltime" id="fulltime" hidden>
-  <svg class="emblem big" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
+  <img class="ft-logo" id="ftLogo" alt="" hidden>
+  <svg class="emblem big" id="ftFallback" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
   <div class="ft-title">FULL TIME</div>
   <div class="ft-sub" id="ftSub"></div>
   <div class="ft-actions">
@@ -132,6 +133,42 @@
     <div class="sheet-head">
       <h2>Settings</h2>
       <button class="btn small start" value="done">DONE</button>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Team profile</div>
+      <div class="chips profile-chips" id="profileChips"></div>
+      <div class="profile-edit">
+        <div class="text-row">
+          <label>Profile name<input type="text" id="pfName" maxlength="40" autocomplete="off"></label>
+          <label>Title<input type="text" id="pfTitle" maxlength="30" autocomplete="off"></label>
+          <label>Subtitle<input type="text" id="pfSubtitle" maxlength="30" autocomplete="off"></label>
+        </div>
+        <div class="color-row">
+          <label>Background<input type="color" data-color="background"></label>
+          <label>Text<input type="color" data-color="text"></label>
+          <label>Primary<input type="color" data-color="primary"></label>
+          <label>Secondary<input type="color" data-color="secondary"></label>
+          <label>Accent<input type="color" data-color="accent"></label>
+        </div>
+        <div class="logo-row">
+          <img class="logo-thumb" id="pfLogoThumb" alt="">
+          <label class="btn small ghost file-btn">
+            <input type="file" id="pfLogoFile" accept="image/*">
+            <span>Upload logo</span>
+          </label>
+          <button type="button" class="btn small ghost" id="pfLogoRemove">No logo</button>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="btn small ghost" id="pfReset">Reset to original</button>
+          <button type="button" class="btn small ghost danger" id="pfDelete">Delete profile</button>
+          <button type="button" class="btn small ghost" id="pfExport">Download profiles.json</button>
+          <label class="btn small ghost file-btn">
+            <input type="file" id="pfImport" accept="application/json,.json">
+            <span>Load profiles.json</span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <div class="field">
@@ -229,6 +266,7 @@
   </form>
 </dialog>
 
+<script src="profiles.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
