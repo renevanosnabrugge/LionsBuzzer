@@ -49,6 +49,7 @@
   <symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.4 13a7.7 7.7 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.5 11a7.7 7.7 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" fill="currentColor" transform="translate(-1 0)"/></symbol>
   <symbol id="i-horn" viewBox="0 0 24 24"><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5z" fill="currentColor"/></symbol>
   <symbol id="i-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="10" rx="2.1" ry="2.7"/><ellipse cx="10" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="14.5" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.1" ry="2.7"/><path d="M12.2 11c-3 0-6.2 4.3-6.2 6.8 0 1.8 1.4 2.7 3 2.7 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-.9 3-2.7 0-2.5-3.2-6.8-6.2-6.8z"/></g></symbol>
+  <symbol id="i-siren" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 0 1 10 0v6z" fill="currentColor"/><rect x="5" y="18" width="14" height="3" rx="1" fill="currentColor"/><path d="M12 2v2.5M4.6 5.6l1.8 1.8M19.4 5.6l-1.8 1.8M1.5 12H4M20 12h2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.8" fill="currentColor"/><circle cx="17.5" cy="16" r="2.8" fill="currentColor"/></symbol>
 </svg>
 
@@ -104,11 +105,8 @@
         <button class="pad pad-buzzer" data-sound="buzzer">
           <svg><use href="#i-horn"/></svg><span>BUZZER</span>
         </button>
-        <button class="pad pad-roar" data-sound="roar">
-          <svg><use href="#i-paw"/></svg><span>LION ROAR</span>
-        </button>
-        <button class="pad pad-custom" data-sound="custom" hidden>
-          <svg><use href="#i-music"/></svg><span id="customPadName">CUSTOM</span>
+        <button class="pad pad-horn" data-sound="horn">
+          <svg><use href="#i-siren"/></svg><span>GOAL HORN</span>
         </button>
       </div>
     </section>
@@ -116,6 +114,14 @@
 </div>
 
 <div class="flash" id="flash"></div>
+
+<div class="goal" id="goal" hidden>
+  <div class="goal-beams"></div>
+  <div class="goal-inner">
+    <div class="goal-text">GOAL!</div>
+    <div class="goal-team" id="goalTeam"></div>
+  </div>
+</div>
 
 <div class="fulltime" id="fulltime" hidden>
   <img class="ft-logo" id="ftLogo" alt="" hidden>
@@ -216,8 +222,7 @@
       <div class="seg-row">
         <div class="seg" data-key="intervalSound">
           <button type="button" data-v="buzzer">Buzzer</button>
-          <button type="button" data-v="roar">Lion roar</button>
-          <button type="button" data-v="custom" class="needs-custom">Custom</button>
+          <button type="button" data-v="horn">Goal horn</button>
           <button type="button" data-v="none">None</button>
         </div>
         <button type="button" class="test-btn" data-test="intervalSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
@@ -229,8 +234,7 @@
       <div class="seg-row">
         <div class="seg" data-key="endSound">
           <button type="button" data-v="buzzer">Buzzer</button>
-          <button type="button" data-v="roar">Lion roar</button>
-          <button type="button" data-v="custom" class="needs-custom">Custom</button>
+          <button type="button" data-v="horn">Goal horn</button>
           <button type="button" data-v="none">None</button>
         </div>
         <button type="button" class="test-btn" data-test="endSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
@@ -239,7 +243,7 @@
 
     <div class="field two">
       <label>
-        <span class="field-label">Sound length <b id="lengthOut">2.0 s</b></span>
+        <span class="field-label">Buzzer length <b id="lengthOut">2.0 s</b></span>
         <input type="range" id="length" min="0.5" max="5" step="0.5">
       </label>
       <label>
@@ -249,20 +253,32 @@
     </div>
 
     <div class="field">
-      <div class="field-label">Custom sound</div>
-      <div class="custom-row">
+      <div class="field-label">Sounds <b>upload your own to replace one</b></div>
+      <div class="sound-row" data-sound="buzzer">
+        <span class="sound-name">Buzzer</span>
+        <span class="custom-name">Built-in</span>
+        <button type="button" class="test-btn play-sound" aria-label="Play buzzer"><svg><use href="#i-play"/></svg></button>
         <label class="btn small ghost file-btn">
-          <input type="file" id="customFile" accept="audio/*">
-          <svg><use href="#i-music"/></svg><span>Upload mp3 / wav</span>
+          <input type="file" accept="audio/*">
+          <svg><use href="#i-music"/></svg><span>Upload</span>
         </label>
-        <span class="custom-name" id="customName">No file loaded</span>
-        <button type="button" class="btn small ghost" id="customRemove" hidden>Remove</button>
+        <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
+      </div>
+      <div class="sound-row" data-sound="horn">
+        <span class="sound-name">Goal horn</span>
+        <span class="custom-name">Built-in</span>
+        <button type="button" class="test-btn play-sound" aria-label="Play goal horn"><svg><use href="#i-play"/></svg></button>
+        <label class="btn small ghost file-btn">
+          <input type="file" accept="audio/*">
+          <svg><use href="#i-music"/></svg><span>Upload</span>
+        </label>
+        <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
       </div>
     </div>
 
     <p class="hint">Tip: on iPad, tap Share → <b>Add to Home Screen</b> for full-screen use that also works offline.
       <b>Next interval</b> moves the clock to the next whole interval (e.g. 14:32 → 14:00) to match the rink clock.
-      Keys: Space start/pause · N next interval · B buzzer · R roar.</p>
+      Keys: Space start/pause · N next interval · B buzzer · G goal horn.</p>
   </form>
 </dialog>
 

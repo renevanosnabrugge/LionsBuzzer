@@ -8,13 +8,18 @@
     matchMin: 20,
     intervalSec: 60,
     intervalSound: 'buzzer',
-    endSound: 'roar',
+    endSound: 'horn',
     length: 2,
     volume: 100,
     direction: 'desc'
   };
   const S = Object.assign({}, DEFAULTS);
   try { Object.assign(S, JSON.parse(localStorage.getItem('ylBuzzer') || '{}')); } catch (e) {}
+  // Older versions had a lion roar and a separate custom sound.
+  ['intervalSound', 'endSound'].forEach(k => {
+    if (S[k] === 'roar') S[k] = 'horn';
+    if (!['buzzer', 'horn', 'none'].includes(S[k])) S[k] = DEFAULTS[k];
+  });
   const saveSettings = () => { try { localStorage.setItem('ylBuzzer', JSON.stringify(S)); } catch (e) {} };
 
   const matchMs = () => S.matchMin * 60000;
@@ -22,8 +27,7 @@
 
   // ---------- Audio ----------
   let ac = null;
-  let customBuffer = null;
-  let customName = '';
+  const custom = {};   // sound name -> { buffer, fileName } uploaded on this device
 
   // On iPhone/iPad this makes sound play even when the silent switch is on.
   try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
@@ -105,90 +109,61 @@
     return handle(a, out, sources, dur + 0.15);
   }
 
-  // Lion roar: a low, growling voice that swells up and falls away,
-  // with breath noise, through "mouth" formant filters that open and close.
-  function playRoar(dur, vol) {
+  // Goal horn: a long, deep, brassy chord (like an arena goal horn) that blooms up
+  // to pitch, with a slight air-horn waver, overdriven and compressed to be loud.
+  const HORN_SECONDS = 4.5;
+  function playGoalHorn(vol) {
     const a = audio();
-    const T = Math.max(1.4, dur * 1.25);
-    const t0 = a.currentTime + 0.02, tEnd = t0 + T;
+    const t0 = a.currentTime + 0.01, t1 = t0 + HORN_SECONDS;
 
     const out = a.createGain();
-    out.gain.setValueAtTime(0.0001, t0);
-    out.gain.exponentialRampToValueAtTime(vol * 0.6, t0 + 0.12);
-    out.gain.linearRampToValueAtTime(vol, t0 + 0.3 * T);
-    out.gain.setValueAtTime(vol, t0 + 0.55 * T);
-    out.gain.exponentialRampToValueAtTime(0.0005, tEnd);
+    out.gain.setValueAtTime(0, t0);
+    out.gain.linearRampToValueAtTime(vol, t0 + 0.12);
+    out.gain.setValueAtTime(vol, t1);
+    out.gain.linearRampToValueAtTime(0, t1 + 0.35);
     out.connect(a.destination);
 
-    const lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5000;
-    const makeup = a.createGain(); makeup.gain.value = 2.2;
-    lp.connect(compressor(a)).connect(makeup).connect(out);
+    const pre = a.createGain(); pre.gain.value = 0.22;
+    const shaper = a.createWaveShaper(); shaper.curve = distortion(12); shaper.oversample = '4x';
+    const brass = a.createBiquadFilter(); brass.type = 'lowpass'; brass.frequency.value = 2200; brass.Q.value = 2;
+    const body = a.createBiquadFilter();
+    body.type = 'peaking'; body.frequency.value = 500; body.Q.value = 0.9; body.gain.value = 5;
+    const makeup = a.createGain(); makeup.gain.value = 1.6;
+    pre.connect(shaper).connect(brass).connect(body).connect(compressor(a)).connect(makeup).connect(out);
 
-    const shaper = a.createWaveShaper(); shaper.curve = distortion(8); shaper.oversample = '4x';
+    // Air-horn waver.
+    const lfo = a.createOscillator(); lfo.frequency.value = 5.5;
+    const lfoDepth = a.createGain(); lfoDepth.gain.value = 0.03;
+    lfo.connect(lfoDepth).connect(pre.gain);
 
-    // Formant bank (the throat/mouth). The first formant moves as the mouth opens.
-    [[280, 3, 1.0, true], [900, 5, 0.7], [2300, 6, 0.3]].forEach(([f, q, g, moves]) => {
-      const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q;
-      if (moves) {
-        bp.frequency.setValueAtTime(240, t0);
-        bp.frequency.linearRampToValueAtTime(620, t0 + 0.3 * T);
-        bp.frequency.linearRampToValueAtTime(420, t0 + 0.7 * T);
-        bp.frequency.linearRampToValueAtTime(230, tEnd);
-      } else {
-        bp.frequency.value = f;
-      }
+    // B-flat major chord with a sub-octave.
+    const sources = [lfo];
+    [[58.3, 'sawtooth', 0.5, 0], [116.5, 'sawtooth', 1, 0], [116.5, 'square', 0.45, 6],
+     [146.8, 'sawtooth', 0.8, -4], [174.6, 'sawtooth', 0.7, 3], [233.1, 'sawtooth', 0.35, -6]
+    ].forEach(([f, type, g, cents]) => {
+      const o = a.createOscillator(); o.type = type; o.detune.value = cents;
+      o.frequency.setValueAtTime(f * 0.94, t0);
+      o.frequency.exponentialRampToValueAtTime(f, t0 + 0.18);
+      o.frequency.setValueAtTime(f, t1);
+      o.frequency.exponentialRampToValueAtTime(f * 0.97, t1 + 0.35);
       const gn = a.createGain(); gn.gain.value = g;
-      shaper.connect(bp).connect(gn).connect(lp);
-    });
-    const body = a.createBiquadFilter(); body.type = 'lowpass'; body.frequency.value = 700;
-    const bodyGain = a.createGain(); bodyGain.gain.value = 0.5;
-    shaper.connect(body).connect(bodyGain).connect(lp);
-
-    // Growl: amplitude flutter of the voice.
-    const voice = a.createGain(); voice.gain.value = 0.6;
-    voice.connect(shaper);
-    const growl = a.createOscillator(); growl.type = 'sine';
-    growl.frequency.setValueAtTime(22, t0);
-    growl.frequency.linearRampToValueAtTime(34, t0 + 0.35 * T);
-    growl.frequency.linearRampToValueAtTime(18, tEnd);
-    const growlDepth = a.createGain(); growlDepth.gain.value = 0.45;
-    growl.connect(growlDepth).connect(voice.gain);
-
-    // Pitch wobble for an organic sound.
-    const wobble = a.createOscillator(); wobble.frequency.value = 6.5;
-    const wobbleDepth = a.createGain(); wobbleDepth.gain.value = 30; // cents
-
-    const sources = [growl, wobble];
-    wobble.connect(wobbleDepth);
-    [['sawtooth', 1, 0.6], ['sawtooth', 0.5, 0.45], ['triangle', 2, 0.25]].forEach(([type, mult, g]) => {
-      const o = a.createOscillator(); o.type = type;
-      o.frequency.setValueAtTime(75 * mult, t0);
-      o.frequency.linearRampToValueAtTime(165 * mult, t0 + 0.25 * T);
-      o.frequency.linearRampToValueAtTime(135 * mult, t0 + 0.65 * T);
-      o.frequency.linearRampToValueAtTime(60 * mult, tEnd);
-      wobbleDepth.connect(o.detune);
-      const gn = a.createGain(); gn.gain.value = g;
-      o.connect(gn).connect(voice);
+      o.connect(gn).connect(pre);
       sources.push(o);
     });
 
-    // Breath noise.
-    const len = Math.floor(a.sampleRate * 1.0);
+    // A little air noise on top.
+    const len = a.sampleRate;
     const buf = a.createBuffer(1, len, a.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     const noise = a.createBufferSource(); noise.buffer = buf; noise.loop = true;
-    const nbp = a.createBiquadFilter(); nbp.type = 'bandpass'; nbp.frequency.value = 700; nbp.Q.value = 0.8;
-    const ng = a.createGain();
-    ng.gain.setValueAtTime(0, t0);
-    ng.gain.linearRampToValueAtTime(0.35, t0 + 0.2 * T);
-    ng.gain.linearRampToValueAtTime(0.22, t0 + 0.7 * T);
-    ng.gain.linearRampToValueAtTime(0, tEnd);
-    noise.connect(nbp).connect(ng).connect(shaper);
+    const nbp = a.createBiquadFilter(); nbp.type = 'bandpass'; nbp.frequency.value = 1400; nbp.Q.value = 0.7;
+    const ng = a.createGain(); ng.gain.value = 0.05;
+    noise.connect(nbp).connect(ng).connect(pre);
     sources.push(noise);
 
-    sources.forEach(s => { s.start(t0); s.stop(tEnd + 0.1); });
-    return handle(a, out, sources, T + 0.1);
+    sources.forEach(o => { o.start(t0); o.stop(t1 + 0.4); });
+    return handle(a, out, sources, HORN_SECONDS + 0.4);
   }
 
   function playBuffer(buffer, vol) {
@@ -201,7 +176,7 @@
   }
 
   // Real recordings shipped with the site replace the synthesized sounds:
-  // drop sounds/lion-roar.mp3 or sounds/buzzer.mp3 into the site folder.
+  // drop sounds/goal-horn.mp3 or sounds/buzzer.mp3 into the site folder.
   const recorded = {};
   async function loadRecorded(name, url) {
     try {
@@ -213,14 +188,15 @@
 
   function play(name) {
     const vol = S.volume / 100;
+    // A sound uploaded on this device wins, then a recording shipped with the site, then the synth.
+    if (custom[name]) return playBuffer(custom[name].buffer, vol);
     if (recorded[name]) return playBuffer(recorded[name], vol);
     if (name === 'buzzer') return playBuzzer(S.length, vol);
-    if (name === 'roar') return playRoar(S.length, vol);
-    if (name === 'custom' && customBuffer) return playBuffer(customBuffer, vol);
+    if (name === 'horn') return playGoalHorn(vol);
     return null;
   }
 
-  // ---------- Custom sound, kept in this browser (IndexedDB) ----------
+  // ---------- Custom sounds, kept in this browser (IndexedDB) ----------
   const DB = 'ylBuzzer', STORE = 'files';
   function db() {
     return new Promise((res, rej) => {
@@ -240,17 +216,22 @@
     });
   }
 
-  async function loadCustom(name, data) {
-    customBuffer = await audio().decodeAudioData(data.slice(0));
-    customName = name;
-    renderCustom();
+  const SOUNDS = ['buzzer', 'horn'];
+
+  async function loadCustom(name, fileName, data) {
+    custom[name] = { buffer: await audio().decodeAudioData(data.slice(0)), fileName };
+    renderSounds();
   }
 
   async function restoreCustom() {
-    try {
-      const rec = await dbDo('readonly', st => st.get('custom'));
-      if (rec) await loadCustom(rec.name, rec.data);
-    } catch (e) { /* no stored sound */ }
+    for (const name of SOUNDS) {
+      try {
+        const rec = await dbDo('readonly', st => st.get('custom-' + name));
+        if (rec) await loadCustom(name, rec.name, rec.data);
+      } catch (e) { /* no stored sound */ }
+    }
+    // Clean up the single custom slot of older versions.
+    try { await dbDo('readwrite', st => st.delete('custom')); } catch (e) {}
   }
 
   // ---------- Match / interval state ----------
@@ -451,8 +432,22 @@
       pad.classList.add('playing');
       clearTimeout(timer);
       timer = setTimeout(() => pad.classList.remove('playing'), h.endsAt - performance.now());
+      if (pad.dataset.sound === 'horn') goal(h, () => { h = null; pad.classList.remove('playing'); clearTimeout(timer); });
     });
   });
+
+  // GOAL! light show while the goal horn plays. Tap it to stop.
+  let goalTimer = null;
+  function goal(h, onStop) {
+    const g = $('goal');
+    $('goalTeam').textContent = $('wmTitle').textContent;
+    g.hidden = false;
+    g.classList.remove('on'); void g.offsetWidth; g.classList.add('on');
+    clearTimeout(goalTimer);
+    const hide = () => { g.hidden = true; g.onclick = null; };
+    goalTimer = setTimeout(hide, Math.max(1500, h.endsAt - performance.now()));
+    g.onclick = () => { clearTimeout(goalTimer); h.stop(); onStop(); hide(); };
+  }
 
   document.addEventListener('keydown', e => {
     if ($('settings').open || e.repeat) return;
@@ -460,7 +455,7 @@
     if (e.code === 'Space') { e.preventDefault(); st.running ? pause() : start(); }
     else if (k === 'n') nextInterval();
     else if (k === 'b') document.querySelector('.pad-buzzer').click();
-    else if (k === 'r') document.querySelector('.pad-roar').click();
+    else if (k === 'g') document.querySelector('.pad-horn').click();
   });
 
   // Stop Space from also "clicking" whichever button has focus.
@@ -497,7 +492,6 @@
       const val = String(S[group.dataset.key]);
       group.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === val));
     });
-    document.querySelectorAll('.needs-custom').forEach(b => { b.disabled = !customBuffer; });
     $('length').value = S.length;
     $('volume').value = S.volume;
     $('lengthOut').textContent = Number(S.length).toFixed(1) + ' s';
@@ -543,35 +537,37 @@
   $('length').addEventListener('input', e => setSetting('length', Number(e.target.value)));
   $('volume').addEventListener('input', e => setSetting('volume', Number(e.target.value)));
 
-  function renderCustom() {
-    const has = !!customBuffer;
-    $('customName').textContent = has ? customName : 'No file loaded';
-    $('customRemove').hidden = !has;
-    document.querySelector('.pad-custom').hidden = !has;
-    $('customPadName').textContent = has ? customName.replace(/\.[^.]+$/, '').toUpperCase() : 'CUSTOM';
-    renderSettings();
+  // Settings: replace the buzzer or goal horn with an uploaded sound.
+  function renderSounds() {
+    document.querySelectorAll('.sound-row').forEach(row => {
+      const name = row.dataset.sound;
+      const c = custom[name];
+      row.querySelector('.custom-name').textContent =
+        c ? c.fileName : recorded[name] ? 'Recording (site)' : 'Built-in';
+      row.querySelector('.use-builtin').classList.toggle('off', !c);
+    });
   }
 
-  $('customFile').addEventListener('change', async e => {
-    const file = e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    try {
-      const data = await file.arrayBuffer();
-      await loadCustom(file.name, data);
-      try { await dbDo('readwrite', s => s.put({ name: file.name, data }, 'custom')); } catch (err) {}
-    } catch (err) {
-      $('customName').textContent = 'Could not read that file';
-    }
-  });
-
-  $('customRemove').addEventListener('click', async () => {
-    customBuffer = null; customName = '';
-    try { await dbDo('readwrite', s => s.delete('custom')); } catch (e) {}
-    if (S.intervalSound === 'custom') S.intervalSound = DEFAULTS.intervalSound;
-    if (S.endSound === 'custom') S.endSound = DEFAULTS.endSound;
-    saveSettings();
-    renderCustom();
+  document.querySelectorAll('.sound-row').forEach(row => {
+    const name = row.dataset.sound;
+    row.querySelector('.play-sound').addEventListener('click', () => play(name));
+    row.querySelector('input[type=file]').addEventListener('change', async e => {
+      const file = e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      try {
+        const data = await file.arrayBuffer();
+        await loadCustom(name, file.name, data);
+        try { await dbDo('readwrite', st => st.put({ name: file.name, data }, 'custom-' + name)); } catch (err) {}
+      } catch (err) {
+        row.querySelector('.custom-name').textContent = 'Could not read that file';
+      }
+    });
+    row.querySelector('.use-builtin').addEventListener('click', async () => {
+      delete custom[name];
+      try { await dbDo('readwrite', st => st.delete('custom-' + name)); } catch (e) {}
+      renderSounds();
+    });
   });
 
   // Offline support when served over http(s), e.g. GitHub Pages.
@@ -580,9 +576,11 @@
   }
 
   renderSettings();
-  renderCustom();
+  renderSounds();
   restoreCustom();
-  loadRecorded('roar', 'sounds/lion-roar.mp3');
-  loadRecorded('buzzer', 'sounds/buzzer.mp3');
+  Promise.all([
+    loadRecorded('horn', 'sounds/goal-horn.mp3'),
+    loadRecorded('buzzer', 'sounds/buzzer.mp3')
+  ]).then(renderSounds);
   render();
 })();
