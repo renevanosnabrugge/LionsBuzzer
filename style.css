@@ -578,3 +578,4 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 .sheet.page a { color: var(--green); }
 .about-maker { color: var(--muted); }
 #about .sheet-head { align-self: stretch; text-align: left; }
+.sheet.page a.coffee-btn { color: var(--white); }
