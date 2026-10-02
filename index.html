@@ -46,6 +46,9 @@
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M4 5v14l10-7zM15 5h3.5v14H15z" fill="currentColor"/></symbol>
   <symbol id="i-reset" viewBox="0 0 24 24"><path d="M12 5V2L7 6.5 12 11V8a5 5 0 1 1-5 5H4a8 8 0 1 0 8-8z" fill="currentColor"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.8" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M4 9h12v5.5A5.5 5.5 0 0 1 10.5 20h-1A5.5 5.5 0 0 1 4 14.5z" fill="currentColor"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 2.8c-.8 1 .8 1.7 0 2.9M11 2.8c-.8 1 .8 1.7 0 2.9M14.5 2.8c-.8 1 .8 1.7 0 2.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="3" y="20.5" width="15" height="1.8" rx=".9" fill="currentColor"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.4 13a7.7 7.7 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.5 11a7.7 7.7 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" fill="currentColor" transform="translate(-1 0)"/></symbol>
   <symbol id="i-horn" viewBox="0 0 24 24"><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5z" fill="currentColor"/></symbol>
   <symbol id="i-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="10" rx="2.1" ry="2.7"/><ellipse cx="10" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="14.5" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.1" ry="2.7"/><path d="M12.2 11c-3 0-6.2 4.3-6.2 6.8 0 1.8 1.4 2.7 3 2.7 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-.9 3-2.7 0-2.5-3.2-6.8-6.2-6.8z"/></g></symbol>
@@ -66,9 +69,17 @@
         <div class="wm-sub"><span id="wmSub">ALLIANCE</span> <span class="wm-tag">· BUZZER</span></div>
       </div>
     </div>
-    <button class="icon-btn" id="settingsBtn" aria-label="Settings">
-      <svg><use href="#i-gear"/></svg>
-    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="aboutBtn" aria-label="About and donate">
+        <svg><use href="#i-coffee"/></svg>
+      </button>
+      <button class="icon-btn" id="helpBtn" aria-label="Help">
+        <svg><use href="#i-help"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+        <svg><use href="#i-gear"/></svg>
+      </button>
+    </div>
   </header>
 
   <main class="board">
@@ -252,7 +263,11 @@
     <div class="tab-panel" data-panel="team" hidden>
       <div class="field">
         <div class="field-label">Team profile</div>
-        <div class="chips profile-chips" id="profileChips"></div>
+        <div class="chips profile-chips" id="profileChips">
+          <label class="profile-select">
+            <select id="profileSelect" aria-label="Team"></select>
+          </label>
+        </div>
         <p class="pf-locked" id="pfLocked" hidden>This is a built-in profile and can't be changed. Tap <b>+ New profile</b> to make an editable copy.</p>
         <div class="profile-edit">
           <div class="text-row">
@@ -294,7 +309,98 @@
   </form>
 </dialog>
 
+<dialog class="sheet page" id="help">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2>How it works</h2>
+      <button type="button" class="btn small start close-page">CLOSE</button>
+    </div>
+
+    <section class="help-sec">
+      <h3>The main screen</h3>
+      <img src="help/main.jpg" alt="Main screen" loading="lazy">
+      <ul>
+        <li><b>Match time</b> (top left): counts down from the match length, shown in tenths during the last minute.</li>
+        <li><b>Interval ring</b>: the time left in the current interval. It pulses in the last 5 seconds, and the buzzer sounds and the screen flashes at every interval.</li>
+        <li><b>START</b> starts the clock. While it runs the button reads <b>PAUSE</b>; after a pause it reads <b>RESUME</b>.</li>
+        <li><b>NEXT INTERVAL</b> moves the clock to the next whole interval, to get it back in line with the rink clock: with a 1-minute interval, 14:32 becomes 14:00 and 9:01 becomes 9:00. It does not sound the buzzer.</li>
+        <li><b>RESET</b> sets the match back to the start (it asks first).</li>
+        <li><b>BUZZER</b> and <b>GOAL HORN</b> play the sound right away. Tap again to stop it.</li>
+      </ul>
+    </section>
+
+    <section class="help-sec">
+      <h3>Goal!</h3>
+      <img src="help/goal.jpg" alt="Goal screen" loading="lazy">
+      <p>The <b>GOAL HORN</b> pad plays the horn with a full-screen light show. Tap the screen to stop both.</p>
+    </section>
+
+    <section class="help-sec">
+      <h3>Full time</h3>
+      <img src="help/fulltime.jpg" alt="Full time screen" loading="lazy">
+      <p>When the match time runs out, the end-of-match sound plays and the full-time screen appears. <b>NEW MATCH</b> resets the clock.</p>
+    </section>
+
+    <section class="help-sec">
+      <h3>Settings: Match</h3>
+      <img src="help/settings-match.jpg" alt="Match settings" loading="lazy">
+      <ul>
+        <li><b>Match time</b> and <b>Interval</b>: tap − or +, hold to go faster, or pick a preset.</li>
+        <li><b>Clock</b>: count down (default) or count up.</li>
+      </ul>
+    </section>
+
+    <section class="help-sec">
+      <h3>Settings: Sounds</h3>
+      <img src="help/settings-sounds.jpg" alt="Sound settings" loading="lazy">
+      <ul>
+        <li>Choose the sound for every interval and for the end of the match: buzzer, goal horn or none. ▶ plays it.</li>
+        <li><b>Buzzer length</b> and <b>Volume</b>.</li>
+        <li><b>Upload</b> your own mp3 or wav to replace the buzzer or the goal horn on this device. <b>Use built-in</b> goes back.</li>
+      </ul>
+    </section>
+
+    <section class="help-sec">
+      <h3>Settings: Team</h3>
+      <img src="help/settings-team.jpg" alt="Team settings" loading="lazy">
+      <ul>
+        <li>Pick your team from the list to use its colours and logo. The teams in the list are fixed.</li>
+        <li><b>+ New profile</b> makes your own copy of the selected team: change the names, the five colours and the logo. Your own profiles are saved on this device only.</li>
+        <li><b>Export for website (.zip)</b> packs your profiles so they can be added to the app for everyone. <b>Download</b> / <b>Load profiles.json</b> copy profiles to another device.</li>
+      </ul>
+    </section>
+
+    <section class="help-sec">
+      <h3>Tips</h3>
+      <ul>
+        <li>On an iPad, tap Share → <b>Add to Home Screen</b>. The app then opens full screen and also works without internet.</li>
+        <li>Turn the volume all the way up. For a rink, connect a Bluetooth speaker or the PA system.</li>
+        <li>The screen stays on while the clock runs.</li>
+        <li>With a keyboard: Space start/pause · N next interval · B buzzer · G goal horn.</li>
+      </ul>
+    </section>
+  </div>
+</dialog>
+
+<dialog class="sheet page" id="about">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2>About</h2>
+      <button type="button" class="btn small start close-page">CLOSE</button>
+    </div>
+    <img class="about-logo" src="logos/dordrecht-lions.png" alt="Dordrecht Lions">
+    <p class="about-lead">This buzzer was made by volunteers of <b>Dordrecht Lions</b> to make 3x3 games, tournaments and U9/U11 games easier to run.</p>
+    <p>Do you like it? Please consider a donation. We pay the hosting from it, and the rest goes to the youth of Dordrecht Lions.</p>
+    <a class="btn start coffee-btn" id="coffeeLink" href="#" target="_blank" rel="noopener" hidden>
+      <svg><use href="#i-coffee"/></svg><span>BUY ME A COFFEE</span>
+    </a>
+    <p>Would you like to sponsor the clock? <span id="sponsorContact">Get in touch with us.</span></p>
+    <p class="about-maker" id="aboutMaker" hidden></p>
+  </div>
+</dialog>
+
 <script src="profiles.js"></script>
+<script src="pages.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

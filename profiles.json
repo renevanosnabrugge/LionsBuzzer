@@ -1,21 +1,7 @@
 {
   "version": 1,
-  "default": "yetilions",
+  "default": "dordrecht-lions",
   "profiles": [
-    {
-      "id": "yetilions",
-      "name": "YetiLions",
-      "title": "YETI LION",
-      "subtitle": "ALLIANCE",
-      "logo": "logos/yetilions.png",
-      "colors": {
-        "background": "#10294b",
-        "text": "#ffffff",
-        "primary": "#10a1dc",
-        "secondary": "#0e7e3f",
-        "accent": "#79be60"
-      }
-    },
     {
       "id": "dordrecht-lions",
       "name": "Dordrecht Lions",
@@ -28,6 +14,174 @@
         "primary": "#0053a1",
         "secondary": "#007d32",
         "accent": "#568ec2"
+      }
+    },
+    {
+      "id": "amsterdam-tigers",
+      "name": "Amsterdam Tigers",
+      "title": "AMSTERDAM TIGERS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/amsterdam-tigers.svg",
+      "colors": {
+        "background": "#111111",
+        "text": "#ffffff",
+        "primary": "#6b6b6b",
+        "secondary": "#2b2b2b",
+        "accent": "#bdbdbd"
+      }
+    },
+    {
+      "id": "capitals-leeuwarden",
+      "name": "Capitals Leeuwarden",
+      "title": "CAPITALS LEEUWARDEN",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/capitals-leeuwarden.svg",
+      "colors": {
+        "background": "#0b1a3a",
+        "text": "#ffffff",
+        "primary": "#1f4fa0",
+        "secondary": "#0b2d6b",
+        "accent": "#c8102e"
+      }
+    },
+    {
+      "id": "dragons-utrecht",
+      "name": "Dragons Utrecht",
+      "title": "DRAGONS UTRECHT",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/dragons-utrecht.svg",
+      "colors": {
+        "background": "#140c0c",
+        "text": "#ffffff",
+        "primary": "#c8102e",
+        "secondary": "#5c0a14",
+        "accent": "#ff5a36"
+      }
+    },
+    {
+      "id": "eindhoven-kemphanen",
+      "name": "Eindhoven Kemphanen",
+      "title": "EINDHOVEN KEMPHANEN",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/eindhoven-kemphanen.svg",
+      "colors": {
+        "background": "#0b1d36",
+        "text": "#ffffff",
+        "primary": "#1d5fa8",
+        "secondary": "#003c71",
+        "accent": "#f47920"
+      }
+    },
+    {
+      "id": "gijs-groningen",
+      "name": "Gijs Groningen",
+      "title": "GIJS GRONINGEN",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/gijs-groningen.svg",
+      "colors": {
+        "background": "#141414",
+        "text": "#ffffff",
+        "primary": "#c8102e",
+        "secondary": "#7a0a1c",
+        "accent": "#e8434f"
+      }
+    },
+    {
+      "id": "hijs-den-haag",
+      "name": "HIJS Den Haag",
+      "title": "HIJS DEN HAAG",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/hijs-den-haag.svg",
+      "colors": {
+        "background": "#0a1530",
+        "text": "#ffffff",
+        "primary": "#c8102e",
+        "secondary": "#003da5",
+        "accent": "#e8434f"
+      }
+    },
+    {
+      "id": "nijmegen-devils",
+      "name": "Nijmegen Devils",
+      "title": "NIJMEGEN DEVILS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/nijmegen-devils.svg",
+      "colors": {
+        "background": "#0d0d0d",
+        "text": "#ffffff",
+        "primary": "#ce1126",
+        "secondary": "#3a3a3a",
+        "accent": "#ff3b3b"
+      }
+    },
+    {
+      "id": "red-eagles-den-bosch",
+      "name": "Red Eagles Den Bosch",
+      "title": "RED EAGLES",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/red-eagles-den-bosch.svg",
+      "colors": {
+        "background": "#1a0c0e",
+        "text": "#ffffff",
+        "primary": "#c8102e",
+        "secondary": "#2a2a2a",
+        "accent": "#e04a5a"
+      }
+    },
+    {
+      "id": "smoke-eaters-geleen",
+      "name": "Smoke Eaters Geleen",
+      "title": "SMOKE EATERS GELEEN",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/smoke-eaters-geleen.svg",
+      "colors": {
+        "background": "#0a1530",
+        "text": "#ffffff",
+        "primary": "#2456c0",
+        "secondary": "#003da5",
+        "accent": "#c8102e"
+      }
+    },
+    {
+      "id": "tilburg-trappers",
+      "name": "Tilburg Trappers",
+      "title": "TILBURG TRAPPERS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/tilburg-trappers.svg",
+      "colors": {
+        "background": "#06204a",
+        "text": "#ffffff",
+        "primary": "#1d5fb8",
+        "secondary": "#003f87",
+        "accent": "#e0b400"
+      }
+    },
+    {
+      "id": "zoetermeer-panters",
+      "name": "Zoetermeer Panters",
+      "title": "ZOETERMEER PANTERS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/zoetermeer-panters.svg",
+      "colors": {
+        "background": "#0d0d0d",
+        "text": "#ffffff",
+        "primary": "#4a4a4a",
+        "secondary": "#1f1f1f",
+        "accent": "#e0b000"
+      }
+    },
+    {
+      "id": "yetilions",
+      "name": "YetiLions",
+      "title": "YETI LION",
+      "subtitle": "ALLIANCE",
+      "logo": "logos/yetilions.png",
+      "colors": {
+        "background": "#10294b",
+        "text": "#ffffff",
+        "primary": "#10a1dc",
+        "secondary": "#0e7e3f",
+        "accent": "#79be60"
       }
     },
     {

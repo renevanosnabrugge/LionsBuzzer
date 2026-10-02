@@ -1,6 +1,6 @@
 # Lions Buzzer 🦁🏒
 
-A loud interval buzzer and match clock for ice hockey, styled per team (YetiLions by default, plus Dordrecht Lions and a Neutral style).
+A loud interval buzzer and match clock for ice hockey, styled per team: Dordrecht Lions by default, plus the other Dutch Eredivisie clubs, YetiLions and a Neutral style.
 It's built for an iPad and also works on phones and laptops.
 
 ## Features
@@ -25,12 +25,17 @@ On a single device you can also upload a file under *Settings → Sounds*, which
 ### Team profiles
 
 Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
-Open *Settings → Team* to select a profile, or tap **+ New profile** to create one; it starts as a copy of the selected profile and can be edited and deleted.
+Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profile** to create one; it starts as a copy of the selected profile and can be edited and deleted.
 
-- The built-in profiles come from `profiles.json` in the repository root, with logos in `logos/`: **YetiLions** (the default), **Dordrecht Lions** (colours from its style book) and **Neutral** (San Jose Sharks-style teal, black and orange, with a neutral hockey logo). They are locked in the app; change them by editing `profiles.json`.
+- The built-in profiles come from `profiles.json` in the repository root, with logos in `logos/`: **Dordrecht Lions** (the default, colours from its style book), the other 2025–26 Eredivisie clubs, **YetiLions** and **Neutral** (San Jose Sharks-style teal, black and orange). They are locked in the app; change them by editing `profiles.json`.
+- The other Eredivisie clubs use their club colours with a generic crossed-sticks badge, not their real logos. A club can send its logo to replace the badge in `logos/`. Colours for Leeuwarden, Den Haag and Geleen could not be confirmed and may need adjusting.
 - Profiles you create in the app are saved only on that device.
 - **Export for website (.zip)** downloads `profiles.json` (the built-in profiles plus the ones on this device) and the uploaded logos as files in `logos/`. Unzip it into the repository root, commit and push, and those profiles become built-in for everyone.
 - **Download profiles.json** and **Load profiles.json** copy profiles between devices; logos are embedded in that file.
+
+### Help and About
+
+The **?** icon opens a help page with screenshots (`help/`). The **coffee** icon opens the About page: who made the app, a donation button and a sponsoring contact. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
 
 ## Deploying to GitHub Pages
 
