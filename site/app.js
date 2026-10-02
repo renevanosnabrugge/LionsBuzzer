@@ -493,7 +493,7 @@
   function renderSettings() {
     $('matchMinOut').textContent = fmtSetting.matchMin(S.matchMin);
     $('intervalSecOut').textContent = fmtSetting.intervalSec(S.intervalSec);
-    document.querySelectorAll('.chips, .seg').forEach(group => {
+    document.querySelectorAll('.chips[data-key], .seg[data-key]').forEach(group => {
       const val = String(S[group.dataset.key]);
       group.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === val));
     });
@@ -527,7 +527,7 @@
     });
   });
 
-  document.querySelectorAll('.chips, .seg').forEach(group => {
+  document.querySelectorAll('.chips[data-key], .seg[data-key]').forEach(group => {
     const key = group.dataset.key;
     group.addEventListener('click', e => {
       const b = e.target.closest('button');
@@ -572,13 +572,6 @@
     if (S.endSound === 'custom') S.endSound = DEFAULTS.endSound;
     saveSettings();
     renderCustom();
-  });
-
-  // Use the club's own logo if a logo.png is placed next to this page.
-  const logo = document.querySelector('.emblem-img');
-  logo.addEventListener('load', () => {
-    logo.hidden = false;
-    document.querySelector('.top .emblem').style.display = 'none';
   });
 
   // Offline support when served over http(s), e.g. GitHub Pages.

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "default": "yetilions",
+  "profiles": [
+    {
+      "id": "yetilions",
+      "name": "YetiLions",
+      "title": "YETI LION",
+      "subtitle": "ALLIANCE",
+      "logo": "logos/yetilions.png",
+      "colors": {
+        "background": "#10294b",
+        "text": "#ffffff",
+        "primary": "#10a1dc",
+        "secondary": "#0e7e3f",
+        "accent": "#79be60"
+      }
+    },
+    {
+      "id": "dordrecht-lions",
+      "name": "Dordrecht Lions",
+      "title": "DORDRECHT LIONS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/dordrecht-lions.png",
+      "colors": {
+        "background": "#103073",
+        "text": "#ffffff",
+        "primary": "#0053a1",
+        "secondary": "#007d32",
+        "accent": "#568ec2"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-# Yeti Lion Alliance Buzzer 🦁🏒
+# Lions Buzzer 🦁🏒
 
-A loud interval buzzer and match clock for ice hockey, in the Yeti Lion Alliance colours.
+A loud interval buzzer and match clock for ice hockey, styled per team (YetiLions by default, plus Dordrecht Lions).
 It's built for an iPad and also works on phones and laptops.
 
 ## Features
@@ -22,9 +22,16 @@ The built-in buzzer and roar are synthesized. To use real recordings for everyon
 `lion-roar.mp3` replaces the Lion roar and `buzzer.mp3` replaces the Buzzer. Only use recordings you have the rights to (CC0 / public domain).
 On a single device you can also load a file under *Settings → Custom sound*.
 
-### Using the real club logo
+### Team profiles
 
-The emblem in the app is a simplified drawing. To use the official logo, add it as `site/logo.png` (square or wide, transparent background). The header picks it up automatically.
+Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
+Open *Settings → Team profile* to select, create, edit or delete a profile.
+
+- The built-in profiles are in `site/profiles.json`, with logos in `site/logos/`. **YetiLions** is the default, and **Dordrecht Lions** (colours from its style book) is the second profile.
+- A static website can't save files on the server, so changes made in the app are saved on that device.
+- To publish profiles for everyone, tap **Download profiles.json** and commit that file as `site/profiles.json`.
+- **Load profiles.json** loads profiles from a file onto another device.
+- Uploaded logos are embedded in the downloaded file. You can also put a logo in `site/logos/` and refer to it by its path, as the built-in profiles do.
 
 ## Deploying to GitHub Pages
 
