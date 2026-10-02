@@ -141,141 +141,152 @@
       <button class="btn small start" value="done">DONE</button>
     </div>
 
-    <div class="field">
-      <div class="field-label">Team profile</div>
-      <div class="chips profile-chips" id="profileChips"></div>
-      <div class="profile-edit">
-        <div class="text-row">
-          <label>Profile name<input type="text" id="pfName" maxlength="40" autocomplete="off"></label>
-          <label>Title<input type="text" id="pfTitle" maxlength="30" autocomplete="off"></label>
-          <label>Subtitle<input type="text" id="pfSubtitle" maxlength="30" autocomplete="off"></label>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab on" data-tab="match" role="tab">Match</button>
+      <button type="button" class="tab" data-tab="sounds" role="tab">Sounds</button>
+      <button type="button" class="tab" data-tab="team" role="tab">Team</button>
+    </div>
+    <div class="tab-panel" data-panel="match">
+      <div class="field">
+        <div class="field-label">Match time</div>
+        <div class="stepper" data-key="matchMin" data-step="1" data-min="1" data-max="120">
+          <button type="button" data-dir="-1" aria-label="Less">−</button>
+          <output id="matchMinOut">20 min</output>
+          <button type="button" data-dir="1" aria-label="More">+</button>
         </div>
-        <div class="color-row">
-          <label>Background<input type="color" data-color="background"></label>
-          <label>Text<input type="color" data-color="text"></label>
-          <label>Primary<input type="color" data-color="primary"></label>
-          <label>Secondary<input type="color" data-color="secondary"></label>
-          <label>Accent<input type="color" data-color="accent"></label>
-        </div>
-        <div class="logo-row">
-          <img class="logo-thumb" id="pfLogoThumb" alt="">
-          <label class="btn small ghost file-btn">
-            <input type="file" id="pfLogoFile" accept="image/*">
-            <span>Upload logo</span>
-          </label>
-          <button type="button" class="btn small ghost" id="pfLogoRemove">No logo</button>
-        </div>
-        <div class="profile-actions">
-          <button type="button" class="btn small ghost" id="pfReset">Reset to original</button>
-          <button type="button" class="btn small ghost danger" id="pfDelete">Delete profile</button>
-          <button type="button" class="btn small ghost" id="pfExport">Download profiles.json</button>
-          <label class="btn small ghost file-btn">
-            <input type="file" id="pfImport" accept="application/json,.json">
-            <span>Load profiles.json</span>
-          </label>
+        <div class="chips" data-key="matchMin">
+          <button type="button" data-v="10">10 min</button>
+          <button type="button" data-v="15">15 min</button>
+          <button type="button" data-v="20">20 min</button>
+          <button type="button" data-v="30">30 min</button>
+          <button type="button" data-v="60">60 min</button>
         </div>
       </div>
-    </div>
 
-    <div class="field">
-      <div class="field-label">Match time</div>
-      <div class="stepper" data-key="matchMin" data-step="1" data-min="1" data-max="120">
-        <button type="button" data-dir="-1" aria-label="Less">−</button>
-        <output id="matchMinOut">20 min</output>
-        <button type="button" data-dir="1" aria-label="More">+</button>
-      </div>
-      <div class="chips" data-key="matchMin">
-        <button type="button" data-v="10">10 min</button>
-        <button type="button" data-v="15">15 min</button>
-        <button type="button" data-v="20">20 min</button>
-        <button type="button" data-v="30">30 min</button>
-        <button type="button" data-v="60">60 min</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-label">Interval</div>
-      <div class="stepper" data-key="intervalSec" data-step="5" data-min="5" data-max="1200">
-        <button type="button" data-dir="-1" aria-label="Less">−</button>
-        <output id="intervalSecOut">1:00</output>
-        <button type="button" data-dir="1" aria-label="More">+</button>
-      </div>
-      <div class="chips" data-key="intervalSec">
-        <button type="button" data-v="30">0:30</button>
-        <button type="button" data-v="45">0:45</button>
-        <button type="button" data-v="60">1:00</button>
-        <button type="button" data-v="90">1:30</button>
-        <button type="button" data-v="120">2:00</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-label">Clock</div>
-      <div class="seg" data-key="direction">
-        <button type="button" data-v="desc">▼ Count down</button>
-        <button type="button" data-v="asc">▲ Count up</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-label">Sound every interval</div>
-      <div class="seg-row">
-        <div class="seg" data-key="intervalSound">
-          <button type="button" data-v="buzzer">Buzzer</button>
-          <button type="button" data-v="horn">Goal horn</button>
-          <button type="button" data-v="none">None</button>
+      <div class="field">
+        <div class="field-label">Interval</div>
+        <div class="stepper" data-key="intervalSec" data-step="5" data-min="5" data-max="1200">
+          <button type="button" data-dir="-1" aria-label="Less">−</button>
+          <output id="intervalSecOut">1:00</output>
+          <button type="button" data-dir="1" aria-label="More">+</button>
         </div>
-        <button type="button" class="test-btn" data-test="intervalSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-label">Sound at end of match</div>
-      <div class="seg-row">
-        <div class="seg" data-key="endSound">
-          <button type="button" data-v="buzzer">Buzzer</button>
-          <button type="button" data-v="horn">Goal horn</button>
-          <button type="button" data-v="none">None</button>
+        <div class="chips" data-key="intervalSec">
+          <button type="button" data-v="30">0:30</button>
+          <button type="button" data-v="45">0:45</button>
+          <button type="button" data-v="60">1:00</button>
+          <button type="button" data-v="90">1:30</button>
+          <button type="button" data-v="120">2:00</button>
         </div>
-        <button type="button" class="test-btn" data-test="endSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
       </div>
-    </div>
 
-    <div class="field two">
-      <label>
-        <span class="field-label">Buzzer length <b id="lengthOut">2.0 s</b></span>
-        <input type="range" id="length" min="0.5" max="5" step="0.5">
-      </label>
-      <label>
-        <span class="field-label">Volume <b id="volumeOut">100%</b></span>
-        <input type="range" id="volume" min="10" max="100" step="5">
-      </label>
-    </div>
+      <div class="field">
+        <div class="field-label">Clock</div>
+        <div class="seg" data-key="direction">
+          <button type="button" data-v="desc">▼ Count down</button>
+          <button type="button" data-v="asc">▲ Count up</button>
+        </div>
+      </div>
 
-    <div class="field">
-      <div class="field-label">Sounds <b>upload your own to replace one</b></div>
-      <div class="sound-row" data-sound="buzzer">
-        <span class="sound-name">Buzzer</span>
-        <span class="custom-name">Built-in</span>
-        <button type="button" class="test-btn play-sound" aria-label="Play buzzer"><svg><use href="#i-play"/></svg></button>
-        <label class="btn small ghost file-btn">
-          <input type="file" accept="audio/*">
-          <svg><use href="#i-music"/></svg><span>Upload</span>
+    </div>
+    <div class="tab-panel" data-panel="sounds" hidden>
+      <div class="field">
+        <div class="field-label">Sound every interval</div>
+        <div class="seg-row">
+          <div class="seg" data-key="intervalSound">
+            <button type="button" data-v="buzzer">Buzzer</button>
+            <button type="button" data-v="horn">Goal horn</button>
+            <button type="button" data-v="none">None</button>
+          </div>
+          <button type="button" class="test-btn" data-test="intervalSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Sound at end of match</div>
+        <div class="seg-row">
+          <div class="seg" data-key="endSound">
+            <button type="button" data-v="buzzer">Buzzer</button>
+            <button type="button" data-v="horn">Goal horn</button>
+            <button type="button" data-v="none">None</button>
+          </div>
+          <button type="button" class="test-btn" data-test="endSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+        </div>
+      </div>
+
+      <div class="field two">
+        <label>
+          <span class="field-label">Buzzer length <b id="lengthOut">2.0 s</b></span>
+          <input type="range" id="length" min="0.5" max="5" step="0.5">
         </label>
-        <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
-      </div>
-      <div class="sound-row" data-sound="horn">
-        <span class="sound-name">Goal horn</span>
-        <span class="custom-name">Built-in</span>
-        <button type="button" class="test-btn play-sound" aria-label="Play goal horn"><svg><use href="#i-play"/></svg></button>
-        <label class="btn small ghost file-btn">
-          <input type="file" accept="audio/*">
-          <svg><use href="#i-music"/></svg><span>Upload</span>
+        <label>
+          <span class="field-label">Volume <b id="volumeOut">100%</b></span>
+          <input type="range" id="volume" min="10" max="100" step="5">
         </label>
-        <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
       </div>
-    </div>
 
+      <div class="field">
+        <div class="field-label">Sounds <b>upload your own to replace one</b></div>
+        <div class="sound-row" data-sound="buzzer">
+          <span class="sound-name">Buzzer</span>
+          <span class="custom-name">Built-in</span>
+          <button type="button" class="test-btn play-sound" aria-label="Play buzzer"><svg><use href="#i-play"/></svg></button>
+          <label class="btn small ghost file-btn">
+            <input type="file" accept="audio/*">
+            <svg><use href="#i-music"/></svg><span>Upload</span>
+          </label>
+          <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
+        </div>
+        <div class="sound-row" data-sound="horn">
+          <span class="sound-name">Goal horn</span>
+          <span class="custom-name">Built-in</span>
+          <button type="button" class="test-btn play-sound" aria-label="Play goal horn"><svg><use href="#i-play"/></svg></button>
+          <label class="btn small ghost file-btn">
+            <input type="file" accept="audio/*">
+            <svg><use href="#i-music"/></svg><span>Upload</span>
+          </label>
+          <button type="button" class="btn small ghost use-builtin off">Use built-in</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="tab-panel" data-panel="team" hidden>
+      <div class="field">
+        <div class="field-label">Team profile</div>
+        <div class="chips profile-chips" id="profileChips"></div>
+        <div class="profile-edit">
+          <div class="text-row">
+            <label>Profile name<input type="text" id="pfName" maxlength="40" autocomplete="off"></label>
+            <label>Title<input type="text" id="pfTitle" maxlength="30" autocomplete="off"></label>
+            <label>Subtitle<input type="text" id="pfSubtitle" maxlength="30" autocomplete="off"></label>
+          </div>
+          <div class="color-row">
+            <label>Background<input type="color" data-color="background"></label>
+            <label>Text<input type="color" data-color="text"></label>
+            <label>Primary<input type="color" data-color="primary"></label>
+            <label>Secondary<input type="color" data-color="secondary"></label>
+            <label>Accent<input type="color" data-color="accent"></label>
+          </div>
+          <div class="logo-row">
+            <img class="logo-thumb" id="pfLogoThumb" alt="">
+            <label class="btn small ghost file-btn">
+              <input type="file" id="pfLogoFile" accept="image/*">
+              <span>Upload logo</span>
+            </label>
+            <button type="button" class="btn small ghost" id="pfLogoRemove">No logo</button>
+          </div>
+          <div class="profile-actions">
+            <button type="button" class="btn small ghost" id="pfReset">Reset to original</button>
+            <button type="button" class="btn small ghost danger" id="pfDelete">Delete profile</button>
+            <button type="button" class="btn small ghost" id="pfExport">Download profiles.json</button>
+            <label class="btn small ghost file-btn">
+              <input type="file" id="pfImport" accept="application/json,.json">
+              <span>Load profiles.json</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
     <p class="hint">Tip: on iPad, tap Share → <b>Add to Home Screen</b> for full-screen use that also works offline.
       <b>Next interval</b> moves the clock to the next whole interval (e.g. 14:32 → 14:00) to match the rink clock.
       Keys: Space start/pause · N next interval · B buzzer · G goal horn.</p>
