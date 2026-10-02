@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10294b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="YL Buzzer">
+<title>Yeti Lion Buzzer</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Brand emblem, reused in the header and the full-time screen. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4cc6f2"/><stop offset="1" stop-color="#1170b8"/>
+    </linearGradient>
+    <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9ad27c"/><stop offset="1" stop-color="#0e7e3f"/>
+    </linearGradient>
+    <linearGradient id="gEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10a1dc"/><stop offset=".55" stop-color="#0e7e3f"/><stop offset="1" stop-color="#79be60"/>
+    </linearGradient>
+    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10a1dc"/><stop offset=".6" stop-color="#0e7e3f"/><stop offset="1" stop-color="#79be60"/>
+    </linearGradient>
+  </defs>
+  <symbol id="emblem" viewBox="0 0 240 204">
+    <polygon points="120,30 236,116 120,202 4,116" fill="#0b1d37" stroke="url(#gEdge)" stroke-width="8" stroke-linejoin="round"/>
+    <polygon points="120,44 218,116 120,188 22,116" fill="#fff"/>
+    <polygon points="120,53 120,179 34,116" fill="url(#gBlue)"/>
+    <polygon points="120,53 206,116 120,179" fill="url(#gGreen)"/>
+    <path d="M90 56 L84 18 L104 34 L120 6 L136 34 L156 18 L150 56 Z" fill="#fff" stroke="#0b1d37" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="90" y="46" width="60" height="8" fill="#0b1d37" opacity=".25"/>
+    <text x="120" y="160" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="96"
+          fill="#f4f7fb" stroke="#0b1d37" stroke-width="5" paint-order="stroke" letter-spacing="-2">YL</text>
+  </symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M4 5v14l10-7zM15 5h3.5v14H15z" fill="currentColor"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M12 5V2L7 6.5 12 11V8a5 5 0 1 1-5 5H4a8 8 0 1 0 8-8z" fill="currentColor"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.4 13a7.7 7.7 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.5 11a7.7 7.7 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" fill="currentColor" transform="translate(-1 0)"/></symbol>
+  <symbol id="i-horn" viewBox="0 0 24 24"><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 9.5v5h3.5L13 19V5L6.5 9.5z" fill="currentColor"/></symbol>
+  <symbol id="i-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="10" rx="2.1" ry="2.7"/><ellipse cx="10" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="14.5" cy="6.2" rx="2.1" ry="2.8"/><ellipse cx="18.4" cy="10" rx="2.1" ry="2.7"/><path d="M12.2 11c-3 0-6.2 4.3-6.2 6.8 0 1.8 1.4 2.7 3 2.7 1.3 0 2.1-.6 3.2-.6s1.9.6 3.2.6c1.6 0 3-.9 3-2.7 0-2.5-3.2-6.8-6.2-6.8z"/></g></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.8" fill="currentColor"/><circle cx="17.5" cy="16" r="2.8" fill="currentColor"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="emblem-wrap">
+        <img class="emblem-img" src="logo.png" alt="" hidden>
+        <svg class="emblem" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
+      </span>
+      <div class="wordmark">
+        <div class="wm-bar"></div>
+        <div class="wm-name">YETI LION</div>
+        <div class="wm-sub">ALLIANCE <span>· BUZZER</span></div>
+      </div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+      <svg><use href="#i-gear"/></svg>
+    </button>
+  </header>
+
+  <main class="board">
+    <section class="clocks">
+      <div class="card match">
+        <div class="label">Match time</div>
+        <div class="match-time" id="matchClock">20:00</div>
+        <div class="progress"><div id="matchProgress"></div></div>
+        <div class="match-meta"><span id="matchState">Ready</span><span id="matchLen">20 min</span></div>
+      </div>
+
+      <div class="ring-wrap" id="ringWrap">
+        <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="ring-track" cx="110" cy="110" r="96"/>
+          <circle class="ring-fill" id="ringFill" cx="110" cy="110" r="96" stroke="url(#gRing)"/>
+        </svg>
+        <div class="ring-center">
+          <div class="label">Interval <b id="intNo">1</b></div>
+          <div class="int-time" id="intClock">1:00</div>
+          <div class="int-len" id="intLen">every 1:00</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <button class="btn start" id="startBtn">
+        <svg><use href="#i-play"/></svg><span>START</span>
+      </button>
+      <div class="row">
+        <button class="btn next" id="nextBtn"><svg><use href="#i-next"/></svg><span>NEXT INTERVAL</span></button>
+        <button class="btn ghost" id="resetBtn" aria-label="Reset"><svg><use href="#i-reset"/></svg><span>RESET</span></button>
+      </div>
+      <div class="pads" id="pads">
+        <button class="pad pad-buzzer" data-sound="buzzer">
+          <svg><use href="#i-horn"/></svg><span>BUZZER</span>
+        </button>
+        <button class="pad pad-roar" data-sound="roar">
+          <svg><use href="#i-paw"/></svg><span>LION ROAR</span>
+        </button>
+        <button class="pad pad-custom" data-sound="custom" hidden>
+          <svg><use href="#i-music"/></svg><span id="customPadName">CUSTOM</span>
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<div class="fulltime" id="fulltime" hidden>
+  <svg class="emblem big" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
+  <div class="ft-title">FULL TIME</div>
+  <div class="ft-sub" id="ftSub"></div>
+  <div class="ft-actions">
+    <button class="btn start" id="ftReset"><svg><use href="#i-reset"/></svg><span>NEW MATCH</span></button>
+    <button class="btn ghost" id="ftClose"><span>CLOSE</span></button>
+  </div>
+</div>
+
+<dialog class="sheet" id="settings">
+  <form method="dialog" class="sheet-inner">
+    <div class="sheet-head">
+      <h2>Settings</h2>
+      <button class="btn small start" value="done">DONE</button>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Match time</div>
+      <div class="stepper" data-key="matchMin" data-step="1" data-min="1" data-max="120">
+        <button type="button" data-dir="-1" aria-label="Less">−</button>
+        <output id="matchMinOut">20 min</output>
+        <button type="button" data-dir="1" aria-label="More">+</button>
+      </div>
+      <div class="chips" data-key="matchMin">
+        <button type="button" data-v="10">10 min</button>
+        <button type="button" data-v="15">15 min</button>
+        <button type="button" data-v="20">20 min</button>
+        <button type="button" data-v="30">30 min</button>
+        <button type="button" data-v="60">60 min</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Interval</div>
+      <div class="stepper" data-key="intervalSec" data-step="5" data-min="5" data-max="1200">
+        <button type="button" data-dir="-1" aria-label="Less">−</button>
+        <output id="intervalSecOut">1:00</output>
+        <button type="button" data-dir="1" aria-label="More">+</button>
+      </div>
+      <div class="chips" data-key="intervalSec">
+        <button type="button" data-v="30">0:30</button>
+        <button type="button" data-v="45">0:45</button>
+        <button type="button" data-v="60">1:00</button>
+        <button type="button" data-v="90">1:30</button>
+        <button type="button" data-v="120">2:00</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Sound every interval</div>
+      <div class="seg-row">
+        <div class="seg" data-key="intervalSound">
+          <button type="button" data-v="buzzer">Buzzer</button>
+          <button type="button" data-v="roar">Lion roar</button>
+          <button type="button" data-v="custom" class="needs-custom">Custom</button>
+          <button type="button" data-v="none">None</button>
+        </div>
+        <button type="button" class="test-btn" data-test="intervalSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Sound at end of match</div>
+      <div class="seg-row">
+        <div class="seg" data-key="endSound">
+          <button type="button" data-v="buzzer">Buzzer</button>
+          <button type="button" data-v="roar">Lion roar</button>
+          <button type="button" data-v="custom" class="needs-custom">Custom</button>
+          <button type="button" data-v="none">None</button>
+        </div>
+        <button type="button" class="test-btn" data-test="endSound" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+      </div>
+    </div>
+
+    <div class="field two">
+      <label>
+        <span class="field-label">Sound length <b id="lengthOut">2.0 s</b></span>
+        <input type="range" id="length" min="0.5" max="5" step="0.5">
+      </label>
+      <label>
+        <span class="field-label">Volume <b id="volumeOut">100%</b></span>
+        <input type="range" id="volume" min="10" max="100" step="5">
+      </label>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Custom sound</div>
+      <div class="custom-row">
+        <label class="btn small ghost file-btn">
+          <input type="file" id="customFile" accept="audio/*">
+          <svg><use href="#i-music"/></svg><span>Upload mp3 / wav</span>
+        </label>
+        <span class="custom-name" id="customName">No file loaded</span>
+        <button type="button" class="btn small ghost" id="customRemove" hidden>Remove</button>
+      </div>
+    </div>
+
+    <p class="hint">Tip: on iPad, tap Share → <b>Add to Home Screen</b> for full-screen use that also works offline.
+      Keys: Space start/pause · N next interval · B buzzer · R roar.</p>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
