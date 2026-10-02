@@ -1,8 +1,9 @@
 // Team profiles: name, title, logo and colours. The buzzer works the same for every profile.
 //
-// Built-in profiles come from profiles.json (published with the site). Changes made in the
-// app (new, edited or deleted profiles) are saved on this device. "Download profiles.json"
-// exports all profiles; commit that file to the repository root to publish them for everyone.
+// Built-in profiles come from profiles.json (published with the site) and are locked: they
+// can't be edited or deleted in the app. "+ New profile" makes an editable copy. Profiles made
+// in the app are saved on this device. "Download profiles.json" exports all profiles; commit
+// that file to the repository root to publish them for everyone (and lock them).
 (() => {
   'use strict';
 
@@ -30,8 +31,8 @@
 
   let builtins = FALLBACK.profiles;
   let defaultId = FALLBACK.default;
-  // Device-local changes: edits to built-ins, added profiles, deleted built-in ids.
-  let local = { edits: {}, added: [], deleted: [] };
+  // Profiles made on this device. (Older versions also kept edits/deletions of built-ins.)
+  let local = { added: [] };
   let activeId = null;
   try { activeId = localStorage.getItem(KEY_ACTIVE); } catch (e) {}
 
@@ -112,12 +113,7 @@
 
   // ---------- Profile list ----------
   const isBuiltin = id => builtins.some(b => b.id === id);
-  function list() {
-    return builtins
-      .filter(b => !local.deleted.includes(b.id))
-      .map(b => local.edits[b.id] || b)
-      .concat(local.added);
-  }
+  const list = () => builtins.concat(local.added);
   function active() {
     const all = list();
     return all.find(p => p.id === activeId) || all.find(p => p.id === defaultId) || all[0] || clean(FALLBACK.profiles[0]);
@@ -156,12 +152,12 @@
     saveTimer = setTimeout(() => { idb('readwrite', s => s.put(local, 'local')).catch(() => {}); }, 250);
   }
 
-  // Replace the active profile with an edited copy.
+  // Replace the active profile with an edited copy. Built-in profiles are locked.
   function update(changes) {
+    if (isBuiltin(active().id)) { render(); return; }
     const p = clean(Object.assign({}, active(), changes));
     p.colors = Object.assign({}, active().colors, changes.colors || {});
-    if (isBuiltin(p.id)) local.edits[p.id] = p;
-    else local.added = local.added.map(a => (a.id === p.id ? p : a));
+    local.added = local.added.map(a => (a.id === p.id ? p : a));
     apply(p);
     save();
     render();
@@ -201,14 +197,19 @@
     document.querySelectorAll('[data-color]').forEach(inp => { inp.value = p.colors[inp.dataset.color]; });
     const thumb = $('pfLogoThumb');
     if (p.logo) { thumb.src = p.logo; thumb.hidden = false; } else { thumb.removeAttribute('src'); thumb.hidden = true; }
-    $('pfLogoRemove').hidden = !p.logo;
-    $('pfReset').hidden = !(isBuiltin(p.id) && local.edits[p.id]);
-    $('pfDelete').disabled = list().length <= 1;
+    const locked = isBuiltin(p.id);
+    $('pfLogoRemove').hidden = !p.logo || locked;
+    $('pfLocked').hidden = !locked;
+    $('pfDelete').hidden = locked;
+    document.querySelector('.profile-edit').classList.toggle('locked', locked);
+    document.querySelectorAll('.profile-edit .text-row input, .profile-edit [data-color], #pfLogoFile')
+      .forEach(el => { el.disabled = locked; });
   }
 
+  // Starts as a copy of the selected profile.
   function createProfile() {
     const base = active();
-    const p = clean(Object.assign({}, base, { id: null, name: 'New team' }));
+    const p = clean(Object.assign({}, base, { id: null, name: base.name + ' (copy)' }));
     local.added.push(p);
     select(p.id);
     $('pfName').focus();
@@ -217,19 +218,9 @@
 
   function deleteProfile() {
     const p = active();
-    if (list().length <= 1 || !confirm('Delete profile "' + p.name + '"?')) return;
-    if (isBuiltin(p.id)) {
-      if (!local.deleted.includes(p.id)) local.deleted.push(p.id);
-      delete local.edits[p.id];
-    } else {
-      local.added = local.added.filter(a => a.id !== p.id);
-    }
+    if (isBuiltin(p.id) || !confirm('Delete profile "' + p.name + '"?')) return;
+    local.added = local.added.filter(a => a.id !== p.id);
     activeId = null;
-    select(active().id);
-  }
-
-  function resetProfile() {
-    delete local.edits[active().id];
     select(active().id);
   }
 
@@ -272,10 +263,8 @@
     incoming.forEach(raw => {
       if (!raw || typeof raw !== 'object') return;
       const p = clean(raw);
-      if (isBuiltin(p.id)) {
-        local.edits[p.id] = p;
-        local.deleted = local.deleted.filter(id => id !== p.id);
-      } else if (local.added.some(a => a.id === p.id)) {
+      if (isBuiltin(p.id)) return; // built-ins come from the site and stay locked
+      if (local.added.some(a => a.id === p.id)) {
         local.added = local.added.map(a => (a.id === p.id ? p : a));
       } else {
         local.added.push(p);
@@ -283,6 +272,7 @@
       if (!first) first = p.id;
     });
     if (first) select(data.default && list().some(p => p.id === data.default) ? data.default : first);
+    else alert('Only the built-in profiles were in that file; nothing new to load.');
   }
 
   // ---------- Wiring ----------
@@ -303,7 +293,6 @@
     try { update({ logo: await readLogo(file) }); } catch (err) { alert('Could not read that image.'); }
   });
   $('pfLogoRemove').addEventListener('click', () => update({ logo: '' }));
-  $('pfReset').addEventListener('click', resetProfile);
   $('pfDelete').addEventListener('click', deleteProfile);
   $('pfExport').addEventListener('click', exportProfiles);
   $('pfImport').addEventListener('change', e => {
@@ -333,7 +322,13 @@
     } catch (e) { /* offline or file:// — use the built-in copy */ }
     try {
       const stored = await idb('readonly', s => s.get('local'));
-      if (stored) local = Object.assign({ edits: {}, added: [], deleted: [] }, stored);
+      if (stored) {
+        local = { added: Array.isArray(stored.added) ? stored.added.map(clean) : [] };
+        // Built-ins are locked now: keep any earlier edits to them as editable copies.
+        Object.values(stored.edits || {}).forEach(e => {
+          if (isBuiltin(e.id)) local.added.push(clean(Object.assign({}, e, { id: null, name: e.name + ' (my changes)' })));
+        });
+      }
     } catch (e) {}
     apply(active());
     save();
