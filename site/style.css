@@ -217,7 +217,6 @@ svg { display: block; }
 .row { display: flex; gap: 14px; }
 
 .pads { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.pads:has(.pad-custom:not([hidden])) { grid-template-columns: 1fr 1fr 1fr; }
 .pad {
   position: relative;
   overflow: hidden;
@@ -240,9 +239,7 @@ svg { display: block; }
   pointer-events: none;
 }
 .pad-buzzer { background: linear-gradient(160deg, var(--blue-l), var(--blue-d)); }
-.pad-roar { background: linear-gradient(160deg, var(--green), var(--green-d)); }
-.pad-custom { background: linear-gradient(160deg, var(--navy-hi), var(--navy-lo)); border: 1px solid var(--line); font-size: 24px; }
-.pad-custom span { max-width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pad-horn { background: linear-gradient(160deg, var(--green), var(--green-d)); }
 .pad.playing { animation: padglow .45s ease-in-out infinite alternate; }
 @keyframes padglow { to { filter: brightness(1.35); box-shadow: 0 0 0 4px #fff, 0 0 40px rgba(255, 255, 255, .5); } }
 
@@ -368,7 +365,13 @@ input[type=range]::-webkit-slider-thumb {
 }
 input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--white); border: 4px solid var(--navy); }
 
-.custom-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sound-row {
+  display: grid; grid-template-columns: 120px 1fr 60px auto auto; align-items: center; gap: 10px;
+  min-height: 60px;
+}
+.sound-row .test-btn { height: 54px; }
+.sound-row .use-builtin.off { visibility: hidden; }
+.sound-name { font-weight: 800; font-size: 20px; letter-spacing: .04em; }
 .file-btn { position: relative; overflow: hidden; }
 .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .custom-name { color: var(--muted); font-size: 18px; flex: 1; min-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -450,4 +453,56 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 @media (max-width: 560px) {
   .text-row { grid-template-columns: 1fr; }
   .color-row { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- GOAL! light show ---------- */
+.goal {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; place-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, rgba(var(--navy-lo-rgb), .6), rgba(var(--navy-lo-rgb), .96) 70%);
+  cursor: pointer;
+}
+.goal[hidden] { display: none; }
+.goal::after {
+  content: ""; position: absolute; inset: 0;
+  background: #ff2a2a;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.goal-beams {
+  position: absolute; inset: -60%;
+  background: repeating-conic-gradient(from 0deg,
+    rgba(255, 42, 42, 0) 0deg 10deg, rgba(255, 42, 42, .55) 16deg 22deg, rgba(255, 42, 42, 0) 28deg 45deg);
+}
+.goal-inner { position: relative; text-align: center; }
+.goal-text {
+  font-family: var(--display);
+  font-size: clamp(120px, 26vw, 320px);
+  line-height: .9;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255, 42, 42, .9), 0 0 90px rgba(255, 42, 42, .7), 0 8px 0 rgba(var(--navy-lo-rgb), .8);
+}
+.goal-team {
+  margin-top: 10px;
+  font-weight: 800; font-size: clamp(22px, 4vw, 40px); letter-spacing: .3em;
+  color: var(--white);
+}
+.goal.on .goal-beams { animation: spin 2.2s linear infinite; }
+.goal.on::after { animation: strobe .5s steps(1) infinite; }
+.goal.on .goal-text { animation: goalpop .6s cubic-bezier(.2, 1.6, .4, 1), goalshake .18s .6s ease-in-out infinite alternate; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes strobe { 0% { opacity: .28; } 50% { opacity: 0; } }
+@keyframes goalpop { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@keyframes goalshake { from { transform: rotate(-2deg) scale(1.02); } to { transform: rotate(2deg) scale(1.05); } }
+@media (prefers-reduced-motion: reduce) {
+  .goal.on .goal-beams, .goal.on::after, .goal.on .goal-text { animation: none; }
+}
+@media (max-width: 560px) {
+  .sound-row { grid-template-columns: 1fr 1fr 60px; row-gap: 6px; margin-bottom: 8px; }
+  .sound-row .sound-name { grid-area: 1 / 1 / 2 / 3; }
+  .sound-row .play-sound { grid-area: 1 / 3; }
+  .sound-row .custom-name { grid-area: 2 / 1 / 3 / -1; }
+  .sound-row .file-btn { grid-area: 3 / 1; }
+  .sound-row .use-builtin { grid-area: 3 / 2 / 4 / 4; }
 }

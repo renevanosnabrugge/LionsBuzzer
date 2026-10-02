@@ -2,7 +2,7 @@
 
 Put real recordings here to replace the sounds the app synthesizes:
 
-- `lion-roar.mp3` replaces the **Lion roar**
+- `goal-horn.mp3` replaces the **Goal horn**
 - `buzzer.mp3` replaces the **Buzzer**
 
 The app picks them up automatically, and they work offline after the first visit.
