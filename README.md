@@ -41,7 +41,7 @@ Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profi
 
 ### Help and About
 
-The **?** icon opens a help page with screenshots (`help/`). The **coffee** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and a sponsoring contact. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
+The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and a sponsoring contact. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
 
 ## Deploying to GitHub Pages
 
