@@ -243,8 +243,9 @@
     return handle(a, out, [src], buffer.duration);
   }
 
-  // Real recordings shipped with the site replace the synthesized sounds:
-  // drop sounds/goal-horn.mp3 or sounds/buzzer.mp3 into the site folder.
+  // Real recordings shipped with the site replace the synthesized sounds. They are listed in
+  // config.json ("sounds": { "buzzer": "sounds/buzzer.mp3", "horn": "sounds/goal-horn.mp3" }),
+  // so the app only asks for files that exist.
   const recorded = {};
   async function loadRecorded(name, url) {
     try {
@@ -662,9 +663,13 @@
   renderSettings();
   renderSounds();
   restoreCustom();
-  Promise.all([
-    loadRecorded('horn', 'sounds/goal-horn.mp3'),
-    loadRecorded('buzzer', 'sounds/buzzer.mp3')
-  ]).then(renderSounds);
+  fetch('config.json', { cache: 'no-cache' })
+    .then(r => (r.ok ? r.json() : {}))
+    .catch(() => ({}))
+    .then(cfg => {
+      const files = (cfg && cfg.sounds) || {};
+      return Promise.all(['buzzer', 'horn'].filter(n => files[n]).map(n => loadRecorded(n, files[n])));
+    })
+    .then(renderSounds);
   render();
 })();
