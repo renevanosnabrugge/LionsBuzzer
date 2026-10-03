@@ -40,9 +40,17 @@ Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profi
 - A link preview (WhatsApp, etc.) can't know which team you picked, so the main link shows the default team (Dordrecht Lions). Each built-in team has its own share link, `team/<id>/` (for example `…/LionsBuzzer/team/tilburg-trappers/`), with that team's logo in the preview; opening it starts the app with that team. *Settings → Team → Share link for this team* shares it.
 - The icons in `icons/teams/` and the pages in `team/` are generated from `profiles.json` by `tools/build-assets.cjs` (needs Node and Playwright). Run it after changing `profiles.json` or a logo. If the site moves to a custom domain, change `BASE_URL` in that script (and the `og:` tags in `index.html`) and run it again.
 
+### Sponsors
+
+- A low strip at the bottom of the screen shows up to 4 sponsor logos, toned down, styled like rink boards. It fades out while the clock runs, so it never competes with the time. Empty slots show a dashed "Your logo here".
+- Tapping a logo opens a popup with the sponsor's logo, name, text and website. Tapping "Your logo here" opens an invitation to sponsor, with the contact email from `config.json`.
+- **App sponsors** (shown for every team) are listed in `config.json` under `"sponsors"`. They also appear on the About page.
+- **Team sponsors** are listed in `profiles.json` under that team's `"sponsors"`. They only show in the strip while that team is selected, before the app sponsors, and never on the About page.
+- A sponsor looks like `{ "name": "Xebia", "logo": "sponsors/xebia.png", "url": "https://www.xebia.com", "text": "…" }`. Put sponsor logos in `sponsors/`.
+
 ### Help and About
 
-The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and a sponsoring contact. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
+The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and the app sponsors. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
 
 ## Deploying to GitHub Pages
 

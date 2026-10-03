@@ -1,5 +1,13 @@
 {
   "maker": "Rene van Osnabrugge (Dordrecht Lions)",
   "coffeeUrl": "https://ko-fi.com/renevanosnabrugge",
-  "contactEmail": "rene@dordrechtlions.nl"
+  "contactEmail": "rene@dordrechtlions.nl",
+  "sponsors": [
+    {
+      "name": "Xebia",
+      "logo": "sponsors/xebia.png",
+      "url": "https://www.xebia.com",
+      "text": "Xebia is a global, award-winning AI-first consulting, software engineering, and training company, turning AI strategy into real-world business transformation."
+    }
+  ]
 }

@@ -133,9 +133,20 @@
       </div>
     </section>
   </main>
+
+  <!-- Sponsors: low "rink boards" strip, faded out while the clock runs. Filled by sponsors.js. -->
+  <aside class="boards" id="boards" aria-label="Sponsors">
+    <span class="boards-label">Supported by</span>
+    <div class="boards-slots" id="boardSlots"></div>
+  </aside>
 </div>
 
+
 <div class="flash" id="flash"></div>
+
+<dialog class="sheet sponsor-sheet" id="sponsorModal">
+  <div class="sheet-inner sponsor-card" id="sponsorCard"></div>
+</dialog>
 
 <button type="button" class="sound-banner" id="soundBanner" hidden>
   <svg><use href="#i-horn"/></svg><span>The phone switched the sound off. Tap here to turn it back on.</span>
@@ -342,6 +353,7 @@
         <li><b>NEXT INTERVAL</b> moves the clock to the next whole interval, to get it back in line with the rink clock: with a 1-minute interval, 14:32 becomes 14:00 and 9:01 becomes 9:00. It does not sound the buzzer.</li>
         <li><b>RESET</b> sets the match back to the start (it asks first).</li>
         <li><b>BUZZER</b> and <b>GOAL HORN</b> play the sound right away. Tap again to stop it.</li>
+        <li>The strip at the bottom shows our sponsors. Tap a logo for more about the sponsor. It fades out while the clock runs.</li>
       </ul>
     </section>
 
@@ -412,13 +424,17 @@
     <a class="btn start coffee-btn" id="coffeeLink" href="#" target="_blank" rel="noopener" hidden>
       <svg><use href="#i-puck"/></svg><span>BUY ME A PUCK</span>
     </a>
-    <p>Would you like to sponsor the clock? <span id="sponsorContact">Get in touch with us.</span></p>
+    <section class="about-sponsors">
+      <h3>Our sponsors</h3>
+      <div class="about-grid" id="aboutSponsors"></div>
+    </section>
     <p class="about-maker" id="aboutMaker" hidden></p>
   </div>
 </dialog>
 
 <script src="profiles.js"></script>
 <script src="pages.js"></script>
+<script src="sponsors.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
