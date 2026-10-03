@@ -9,5 +9,9 @@
       "url": "https://www.xebia.com",
       "text": "Xebia is a global, award-winning AI-first consulting, software engineering, and training company, turning AI strategy into real-world business transformation."
     }
-  ]
+  ],
+  "sounds": {
+    "buzzer": "",
+    "horn": ""
+  }
 }

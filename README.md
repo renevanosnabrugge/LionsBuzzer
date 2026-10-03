@@ -18,8 +18,7 @@ Keyboard: `Space` start/pause · `N` next interval · `B` buzzer · `G` goal hor
 
 ### Using real recordings
 
-The built-in buzzer and goal horn are synthesized. To use real recordings for everyone, add them to `sounds/`:
-`goal-horn.mp3` replaces the Goal horn and `buzzer.mp3` replaces the Buzzer. Only use recordings you have the rights to (CC0 / public domain).
+The built-in buzzer and goal horn are synthesized. To use real recordings for everyone, add them to `sounds/` and list them in `config.json` under `"sounds"` (for example `"horn": "sounds/goal-horn.mp3"`). Empty values keep the built-in sound. Only use recordings you have the rights to (CC0 / public domain).
 On a single device you can also upload a file under *Settings → Sounds*, which takes priority over both.
 
 ### Team profiles
