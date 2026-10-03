@@ -114,6 +114,68 @@
     document.querySelectorAll('.emblem-initials').forEach(t => { t.textContent = initials(p); });
     showLogo($('logoImg'), $('logoFallback'), p.logo);
     showLogo($('ftLogo'), $('ftFallback'), p.logo);
+    clearTimeout(iconTimer);
+    iconTimer = setTimeout(() => setAppIcon(p), 300);
+  }
+
+  // Home-screen icon, tab icon and app name follow the selected team. Built-in teams have
+  // pre-rendered icons (tools/build-assets.cjs); for your own profiles the icon is drawn here.
+  let iconTimer = null, manifestUrl = null;
+  const setHref = (sel, href) => { const el = document.querySelector(sel); if (el) el.href = href; };
+  async function setAppIcon(p) {
+    let i180, i192, i512;
+    if (isBuiltin(p.id)) {
+      const base = 'icons/teams/' + p.id + '-';
+      [i180, i192, i512] = [base + '180.png', base + '192.png', base + '512.png'];
+    } else {
+      [i180, i192, i512] = await Promise.all([180, 192, 512].map(n => drawIcon(p, n)));
+    }
+    setHref('link[rel=apple-touch-icon]', i180);
+    setHref('link[rel=icon]', i192);
+    const title = document.querySelector('meta[name=apple-mobile-web-app-title]');
+    if (title) title.content = p.name;
+    const abs = u => new URL(u, location.href).href;
+    const manifest = {
+      name: p.name + ' Buzzer', short_name: p.name, description: 'Interval buzzer and match clock for ice hockey.',
+      start_url: abs('./'), scope: abs('./'), display: 'fullscreen', orientation: 'any',
+      background_color: p.colors.background, theme_color: p.colors.background,
+      icons: [{ src: abs(i192), sizes: '192x192', type: 'image/png' }, { src: abs(i512), sizes: '512x512', type: 'image/png' }]
+    };
+    if (manifestUrl) URL.revokeObjectURL(manifestUrl);
+    manifestUrl = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+    setHref('link[rel=manifest]', manifestUrl);
+  }
+
+  function drawIcon(p, size) {
+    return new Promise(res => {
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = size;
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle = p.colors.background;
+      ctx.fillRect(0, 0, size, size);
+      if (!p.logo) { res(cv.toDataURL('image/png')); return; }
+      const img = new Image();
+      img.onload = () => {
+        const k = Math.min(size * 0.8 / img.naturalWidth, size * 0.8 / img.naturalHeight);
+        const w = img.naturalWidth * k, h = img.naturalHeight * k;
+        ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+        res(cv.toDataURL('image/png'));
+      };
+      img.onerror = () => res(cv.toDataURL('image/png'));
+      img.src = p.logo;
+    });
+  }
+
+  // Share link for a built-in team: its page has a link preview with the team logo
+  // and opens the app with that team selected.
+  async function shareTeam() {
+    const p = active();
+    const url = new URL('team/' + p.id + '/', location.href).href;
+    try {
+      if (navigator.share) { await navigator.share({ title: p.name + ' Buzzer', url }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url); alert('Link copied:\n' + url); }
+    catch (e) { prompt('Copy this link:', url); }
   }
 
   // ---------- Profile list ----------
@@ -212,6 +274,7 @@
     $('pfLogoRemove').hidden = !p.logo || locked;
     $('pfLocked').hidden = !locked;
     $('pfDelete').hidden = locked;
+    $('pfShare').hidden = !locked;
     document.querySelector('.profile-edit').classList.toggle('locked', locked);
     document.querySelectorAll('.profile-edit .text-row input, .profile-edit [data-color], #pfLogoFile')
       .forEach(el => { el.disabled = locked; });
@@ -376,6 +439,7 @@
   $('pfLogoRemove').addEventListener('click', () => update({ logo: '' }));
   $('pfDelete').addEventListener('click', deleteProfile);
   $('profileSelect').addEventListener('change', e => { if (e.target.value) select(e.target.value); });
+  $('pfShare').addEventListener('click', shareTeam);
   $('pfExport').addEventListener('click', exportProfiles);
   $('pfExportSite').addEventListener('click', exportForWebsite);
   $('pfImport').addEventListener('change', e => {
