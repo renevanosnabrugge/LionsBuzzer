@@ -32,21 +32,89 @@
   // On iPhone/iPad this makes sound play even when the silent switch is on.
   try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
 
+  // Phones (iOS especially) can pause or break the audio channel: a call, a notification,
+  // another app playing sound, the screen locking, switching apps. So:
+  //  - every second we check the channel is really running (iOS can say "running" while its
+  //    clock stands still), and rebuild it when it is closed or stuck;
+  //  - every tap on the screen repairs it (iOS only allows starting audio from a tap);
+  //  - while the clock runs, an inaudible tone keeps the channel awake between buzzes;
+  //  - a banner asks for a tap when the sound is blocked.
+  let broken = false;
+  let unlocked = false;
+  let keepAliveWanted = false, keepAliveNode = null;
+  let hc = { ct: 0, moved: 0 };   // last seen audio clock, and when it last moved
+
+  function newContext() {
+    if (ac && ac.state !== 'closed') ac.close().catch(() => {});
+    keepAliveNode = null;
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    ac.onstatechange = updateSoundBanner;
+    broken = false;
+    hc = { ct: ac.currentTime, moved: performance.now() };
+    if (keepAliveWanted) startKeepAlive();
+  }
+
   function audio() {
-    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ac || ac.state === 'closed' || broken) newContext();
     if (ac.state !== 'running') ac.resume().catch(() => {});
     return ac;
   }
 
-  // iOS only allows audio after a touch; unlock it on the first one.
-  const unlock = () => {
+  function startKeepAlive() {
+    if (!ac || keepAliveNode) return;
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.frequency.value = 30;
+    g.gain.value = 0.0001;
+    o.connect(g).connect(ac.destination);
+    o.start();
+    keepAliveNode = o;
+  }
+  function keepAlive(on) {
+    keepAliveWanted = on;
+    if (on) { audio(); startKeepAlive(); }
+    else if (keepAliveNode) { try { keepAliveNode.stop(); } catch (e) {} keepAliveNode = null; }
+  }
+
+  function healthCheck() {
+    if (!ac) return;
+    const now = performance.now(), ct = ac.currentTime;
+    if (ct - hc.ct > 0.01 || ac.state !== 'running') hc.moved = now;
+    hc.ct = ct;
+    if (ac.state === 'running' && now - hc.moved > 2500) broken = true; // says running, but its clock stands still
+    if (broken || ac.state === 'closed') audio();
+    else if (ac.state !== 'running') ac.resume().catch(() => {});
+    updateSoundBanner();
+  }
+  setInterval(healthCheck, 1000);
+
+  function updateSoundBanner() {
+    const off = unlocked && ac && (broken || ac.state !== 'running');
+    $('soundBanner').hidden = !off;
+  }
+
+  // Any tap: (re)start audio while we are allowed to, and play a silent sound to unlock it.
+  function onTap() {
+    unlocked = true;
+    // A tap is the only moment iOS lets a new channel start, so replace anything not running.
+    if (ac && (ac.state !== 'running' || broken)) newContext();
     const a = audio();
-    const b = a.createBuffer(1, 1, 22050);
-    const s = a.createBufferSource();
-    s.buffer = b; s.connect(a.destination); s.start(0);
-    window.removeEventListener('pointerdown', unlock, true);
-  };
-  window.addEventListener('pointerdown', unlock, true);
+    try {
+      const s = a.createBufferSource();
+      s.buffer = a.createBuffer(1, 1, 22050);
+      s.connect(a.destination);
+      s.start(0);
+    } catch (e) {}
+    setTimeout(updateSoundBanner, 300);
+  }
+  window.addEventListener('pointerdown', onTap, true);
+  window.addEventListener('keydown', onTap, true);
+
+  // Coming back to the app (after a call, the lock screen, another app): check right away.
+  const onReturn = () => { if (document.visibilityState === 'visible' && ac) { hc = { ct: ac.currentTime, moved: performance.now() }; healthCheck(); } };
+  document.addEventListener('visibilitychange', onReturn);
+  window.addEventListener('pageshow', onReturn);
+  window.__lbAudio = () => ac; // for troubleshooting
 
   function distortion(amount) {
     const n = 2048, curve = new Float32Array(n);
@@ -275,7 +343,7 @@
 
   function start() {
     if (st.ended) return;
-    audio();
+    keepAlive(true);
     st.running = true;
     st.startedAt = performance.now();
     keepAwake(true);
@@ -285,6 +353,7 @@
   function pause() {
     st.acc = elapsed();
     st.running = false;
+    keepAlive(false);
     keepAwake(false);
     render();
   }
@@ -292,6 +361,7 @@
   function reset(ask) {
     if (ask && elapsed() > 0 && !st.ended && !confirm('Reset the match clock?')) return;
     Object.assign(st, { running: false, acc: 0, startedAt: 0, lastIdx: 0, ended: false });
+    keepAlive(false);
     $('fulltime').hidden = true;
     keepAwake(false);
     render();
@@ -318,6 +388,7 @@
 
   function endMatch() {
     st.running = false;
+    keepAlive(false);
     st.acc = matchMs();
     st.ended = true;
     keepAwake(false);

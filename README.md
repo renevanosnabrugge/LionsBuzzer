@@ -58,5 +58,6 @@ Open `index.html` in a browser, or serve the folder, for example with `python3 -
 ## Notes
 
 - The buzzer and goal horn are synthesized in the browser (Web Audio), so there are no audio files and no copyright issues.
+- Phones can pause or break web audio (calls, notifications, other apps, the lock screen). The app checks the audio channel every second, rebuilds it when it is closed or stuck, repairs it on any tap, keeps it awake with an inaudible tone while the clock runs, and shows a banner when only a tap can bring the sound back.
 - On iPhone/iPad, sound plays even with the silent switch on (iOS 17+). Turn the device volume up, and use a Bluetooth speaker or the rink PA for real volume.
 - Fonts: Anton and Barlow Condensed (SIL Open Font License, see `fonts/`).
