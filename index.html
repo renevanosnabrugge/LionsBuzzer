@@ -3,12 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#10294b">
+<meta name="theme-color" content="#103073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="YL Buzzer">
-<title>Yeti Lion Buzzer</title>
+<meta name="apple-mobile-web-app-title" content="Lions Buzzer">
+<title>Lions Buzzer</title>
+<meta name="description" content="Interval buzzer and match clock for ice hockey.">
+<!-- Link previews (WhatsApp etc.) show the default team. Each team has its own share link under team/<id>/. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lions Buzzer">
+<meta property="og:description" content="Interval buzzer and match clock for ice hockey.">
+<meta property="og:url" content="https://renevanosnabrugge.github.io/LionsBuzzer/">
+<meta property="og:image" content="https://renevanosnabrugge.github.io/LionsBuzzer/icons/teams/dordrecht-lions-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -292,6 +302,7 @@
           </div>
           <div class="profile-actions">
             <button type="button" class="btn small ghost danger" id="pfDelete">Delete profile</button>
+            <button type="button" class="btn small ghost" id="pfShare">Share link for this team</button>
             <button type="button" class="btn small ghost" id="pfExportSite">Export for website (.zip)</button>
             <button type="button" class="btn small ghost" id="pfExport">Download profiles.json</button>
             <label class="btn small ghost file-btn">
@@ -366,6 +377,7 @@
       <ul>
         <li>Pick your team from the list to use its colours and logo. The teams in the list are fixed.</li>
         <li><b>+ New profile</b> makes your own copy of the selected team: change the names, the five colours and the logo. Your own profiles are saved on this device only.</li>
+        <li><b>Share link for this team</b> gives a link with the team logo in WhatsApp and other apps. Opening it starts the app with that team. When you add the app to your Home Screen, it uses the logo of the selected team.</li>
         <li><b>Export for website (.zip)</b> packs your profiles so they can be added to the app for everyone. <b>Download</b> / <b>Load profiles.json</b> copy profiles to another device.</li>
       </ul>
     </section>

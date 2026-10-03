@@ -33,6 +33,12 @@ Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profi
 - **Export for website (.zip)** downloads `profiles.json` (the built-in profiles plus the ones on this device) and the uploaded logos as files in `logos/`. Unzip it into the repository root, commit and push, and those profiles become built-in for everyone.
 - **Download profiles.json** and **Load profiles.json** copy profiles between devices; logos are embedded in that file.
 
+### Team icons and share links
+
+- The home-screen icon, tab icon and app name follow the selected team: choose the team first, then use *Add to Home Screen*.
+- A link preview (WhatsApp, etc.) can't know which team you picked, so the main link shows the default team (Dordrecht Lions). Each built-in team has its own share link, `team/<id>/` (for example `…/LionsBuzzer/team/tilburg-trappers/`), with that team's logo in the preview; opening it starts the app with that team. *Settings → Team → Share link for this team* shares it.
+- The icons in `icons/teams/` and the pages in `team/` are generated from `profiles.json` by `tools/build-assets.cjs` (needs Node and Playwright). Run it after changing `profiles.json` or a logo. If the site moves to a custom domain, change `BASE_URL` in that script (and the `og:` tags in `index.html`) and run it again.
+
 ### Help and About
 
 The **?** icon opens a help page with screenshots (`help/`). The **coffee** icon opens the About page: who made the app, a donation button and a sponsoring contact. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
