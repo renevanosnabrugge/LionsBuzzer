@@ -579,3 +579,20 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 .about-maker { color: var(--muted); }
 #about .sheet-head { align-self: stretch; text-align: left; }
 .sheet.page a.coffee-btn { color: var(--white); }
+
+/* ---------- Sound blocked banner ---------- */
+.sound-banner {
+  position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: 35;
+  display: flex; align-items: center; gap: 12px;
+  max-width: calc(100vw - 32px);
+  padding: 16px 22px;
+  border: 0; border-radius: 18px;
+  background: #ffcd00; color: #111;
+  font-weight: 800; font-size: 19px; text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  cursor: pointer;
+  animation: bannerpulse 1s ease-in-out infinite alternate;
+}
+.sound-banner svg { width: 28px; height: 28px; flex: none; }
+@keyframes bannerpulse { to { box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 6px rgba(255, 205, 0, .35); } }
