@@ -24,14 +24,6 @@
         $('coffeeLink').href = cfg.coffeeUrl;
         $('coffeeLink').hidden = false;
       }
-      if (cfg.contactEmail) {
-        const a = document.createElement('a');
-        a.href = 'mailto:' + cfg.contactEmail + '?subject=' + encodeURIComponent('Sponsoring Lions Buzzer');
-        a.textContent = cfg.contactEmail;
-        $('sponsorContact').textContent = 'Mail us at ';
-        $('sponsorContact').appendChild(a);
-        $('sponsorContact').append('.');
-      }
       if (cfg.maker) {
         $('aboutMaker').textContent = 'Made by ' + cfg.maker + '.';
         $('aboutMaker').hidden = false;

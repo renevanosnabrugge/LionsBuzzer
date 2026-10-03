@@ -64,7 +64,11 @@
       title: String(p.title != null ? p.title : p.name || '').slice(0, 30),
       subtitle: String(p.subtitle || '').slice(0, 30),
       logo: typeof p.logo === 'string' ? p.logo : '',
-      colors
+      colors,
+      // Team sponsors (optional): [{ name, logo, url, text }]
+      sponsors: Array.isArray(p.sponsors) ? p.sponsors.filter(x => x && x.name).map(x => ({
+        name: String(x.name).slice(0, 60), logo: String(x.logo || ''), url: String(x.url || ''), text: String(x.text || '').slice(0, 400)
+      })) : []
     };
   }
 
@@ -129,6 +133,9 @@
     document.querySelectorAll('.emblem-initials').forEach(t => { t.textContent = initials(p); });
     showLogo($('logoImg'), $('logoFallback'), p.logo);
     showLogo($('ftLogo'), $('ftFallback'), p.logo);
+    // Let the sponsor strip know which team is shown (team sponsors only count for built-in teams).
+    window.__lbTeam = { name: p.name, sponsors: isBuiltin(p.id) ? (p.sponsors || []) : [] };
+    window.dispatchEvent(new CustomEvent('lb:profile', { detail: window.__lbTeam }));
     clearTimeout(iconTimer);
     iconTimer = setTimeout(() => setAppIcon(p), 300);
   }
@@ -298,7 +305,7 @@
   // Starts as a copy of the selected profile.
   function createProfile() {
     const base = active();
-    const p = clean(Object.assign({}, base, { id: null, name: base.name + ' (copy)' }));
+    const p = clean(Object.assign({}, base, { id: null, name: base.name + ' (copy)', sponsors: [] }));
     local.added.push(p);
     select(p.id);
     $('pfName').focus();

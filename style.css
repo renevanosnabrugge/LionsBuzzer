@@ -150,7 +150,7 @@ svg { display: block; }
 
 /* Interval ring */
 .ring-wrap {
-  --ring: min(78vw, 34vh, 420px);
+  --ring: min(78vw, 31vh, 420px);
   position: relative;
   width: var(--ring);
   height: var(--ring);
@@ -602,3 +602,57 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
   text-shadow: 0 2px 8px rgba(0, 0, 0, .5);
 }
 .pad svg { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .45)); }
+
+/* ---------- Sponsors: rink-board strip ---------- */
+/* Last row of the page, so it never covers the controls. */
+.boards {
+  width: 100%; max-width: 1280px; margin: 4px auto 0;
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .045);
+  border-top: 2px solid rgba(255, 255, 255, .14);
+  transition: opacity .6s ease;
+}
+body.running .boards { opacity: .1; }
+.boards-label { flex: none; font-weight: 800; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); opacity: .85; }
+.boards-slots { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.board-slot {
+  height: 52px; padding: 0; border: 0; border-radius: 10px; background: none;
+  display: grid; place-items: center; overflow: hidden; cursor: pointer;
+  color: var(--muted); font-weight: 800; font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+}
+.board-slot img { max-height: 44px; max-width: 100%; width: auto; opacity: .6; filter: grayscale(1) brightness(1.2); transition: opacity .3s, filter .3s; }
+.board-slot:hover img, .board-slot:focus-visible img { opacity: 1; filter: none; }
+.board-slot.empty { border: 2px dashed rgba(255, 255, 255, .2); color: rgba(255, 255, 255, .42); }
+@media (max-width: 560px) {
+  .boards { gap: 8px; padding: 6px 8px; }
+  .boards-label { display: none; }
+  .boards-slots { gap: 6px; }
+  .board-slot { height: 42px; font-size: 10px; letter-spacing: .06em; }
+  .board-slot img { max-height: 34px; }
+}
+
+/* ---------- Sponsor popup ---------- */
+.sponsor-sheet { width: min(540px, calc(100vw - 24px)); }
+.sponsor-card { align-items: center; text-align: center; gap: 14px; }
+.sponsor-tag { font-weight: 800; font-size: 13px; letter-spacing: .28em; text-transform: uppercase; color: var(--green); }
+.sponsor-logo { max-height: 110px; max-width: 100%; width: auto; border-radius: 14px; }
+.sponsor-card h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 32px; letter-spacing: .03em; }
+.sponsor-card p { margin: 0; font-size: 19px; line-height: 1.45; }
+.sponsor-card p a { color: var(--green); }
+.sponsor-dash { width: 220px; height: 96px; border: 3px dashed rgba(255, 255, 255, .35); border-radius: 16px; display: grid; place-items: center; font-weight: 800; letter-spacing: .14em; color: rgba(255, 255, 255, .6); }
+.sponsor-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+a.btn { text-decoration: none; color: var(--white); }
+
+/* ---------- About: app sponsors ---------- */
+.about-sponsors { width: 100%; display: grid; gap: 10px; }
+.about-sponsors h3 { margin: 0; }
+.about-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.about-tile {
+  height: 70px; padding: 6px; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .05);
+  display: grid; place-items: center; cursor: pointer;
+}
+.about-tile img { max-height: 56px; max-width: 100%; border-radius: 8px; }
+.about-tile.empty { background: none; border: 2px dashed rgba(255, 255, 255, .25); color: rgba(255, 255, 255, .5); font-weight: 800; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+@media (max-width: 560px) { .about-grid { grid-template-columns: repeat(2, 1fr); } }

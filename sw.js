@@ -1,7 +1,7 @@
 // Offline cache so the buzzer also works at a rink without Wi-Fi.
-const CACHE = 'yl-buzzer-v15';
+const CACHE = 'yl-buzzer-v16';
 const FILES = [
-  './', 'index.html', 'style.css', 'app.js', 'profiles.js', 'pages.js', 'profiles.json', 'config.json', 'manifest.webmanifest',
+  './', 'index.html', 'style.css', 'app.js', 'profiles.js', 'pages.js', 'sponsors.js', 'sponsors/xebia.png', 'profiles.json', 'config.json', 'manifest.webmanifest',
   'logos/yetilions.png', 'logos/dordrecht-lions.png', 'logos/neutral.svg',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   'fonts/anton-latin-400-normal.woff2',

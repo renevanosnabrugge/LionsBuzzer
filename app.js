@@ -463,6 +463,7 @@
     ring.style.strokeDashoffset = (C * (1 - frac)).toFixed(1);
     $('ringWrap').classList.toggle('warn', st.running && iLeft <= 5000 && iLeft > 0);
     document.body.classList.toggle('paused', !st.running && e > 0 && !st.ended);
+    document.body.classList.toggle('running', st.running);
 
     const sb = $('startBtn');
     const label = st.running ? 'PAUSE' : e > 0 && !st.ended ? 'RESUME' : 'START';
