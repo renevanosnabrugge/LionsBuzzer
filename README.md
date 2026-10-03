@@ -1,6 +1,6 @@
 # Lions Buzzer 🦁🏒
 
-A loud interval buzzer and match clock for ice hockey, styled per team: Dordrecht Lions by default, plus the other Dutch Eredivisie clubs, YetiLions and a Neutral style.
+A loud interval buzzer and match clock for ice hockey, styled per team: Dordrecht Lions by default, plus Dutch and Belgian clubs, YetiLions and a Neutral style.
 It's built for an iPad and also works on phones and laptops.
 
 ## Features
@@ -27,8 +27,9 @@ On a single device you can also upload a file under *Settings → Sounds*, which
 Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
 Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profile** to create one; it starts as a copy of the selected profile and can be edited and deleted.
 
-- The built-in profiles come from `profiles.json` in the repository root, with logos in `logos/`: **Dordrecht Lions** (the default, colours from its style book), the other 2025–26 Eredivisie clubs, **YetiLions** and **Neutral** (San Jose Sharks-style teal, black and orange). They are locked in the app; change them by editing `profiles.json`.
-- The other Eredivisie clubs use their club colours with a generic crossed-sticks badge, not their real logos. A club can send its logo to replace the badge in `logos/`. Colours for Leeuwarden, Den Haag and Geleen could not be confirmed and may need adjusting.
+- The built-in profiles come from `profiles.json` in the repository root, with logos in `logos/`: **Dordrecht Lions** (the default), Dutch and Belgian clubs (Alcmaria Flames, Amsterdam Tigers, Antwerpen Phantoms, Breda Yetis, Capitals Leeuwarden, Coldplay Sharks, Dragons Utrecht, Eindhoven Kemphanen, Heerenveen Flyers, HYC Herentals, Gijs Groningen, Leiden Lions, HIJS Den Haag, Nijmegen Devils, Red Eagles Den Bosch, Smoke Eaters Geleen, Tilburg Trappers, Zoetermeer Panters), **YetiLions** and **Neutral**. They are locked in the app; change them by editing `profiles.json`.
+- Logos in `logos/` are named after the team id (`logos/<id>.png`), trimmed and at most 640 px. Logos with a white background have it removed; logos with dark lines or text (Amsterdam, Utrecht, Tilburg) sit on a white plate so they show on dark backgrounds. The files as supplied are kept in `logos/originals/`.
+- The app keeps text readable whatever the team colours: a very light accent or secondary colour is toned down where white text sits on it, and a buzzer colour that blends into the background is lightened.
 - Profiles you create in the app are saved only on that device.
 - **Export for website (.zip)** downloads `profiles.json` (the built-in profiles plus the ones on this device) and the uploaded logos as files in `logos/`. Unzip it into the repository root, commit and push, and those profiles become built-in for everyone.
 - **Download profiles.json** and **Load profiles.json** copy profiles between devices; logos are embedded in that file.

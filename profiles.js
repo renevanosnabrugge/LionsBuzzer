@@ -50,6 +50,9 @@
   const rgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
   const hex = a => '#' + a.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
   const mix = (a, b, t) => { const x = rgb(a), y = rgb(b); return hex(x.map((v, i) => v + (y[i] - v) * t)); };
+  // Relative luminance (0 = black, 1 = white) and a simple colour distance, to keep text readable.
+  const lum = h => { const [r, g, b] = rgb(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const dist = (a, b) => { const x = rgb(a), y = rgb(b); return Math.hypot(x[0] - y[0], x[1] - y[1], x[2] - y[2]); };
 
   function clean(p) {
     const base = FALLBACK.profiles[0];
@@ -103,6 +106,18 @@
       '--green-d-rgb': rgb(c.secondary).join(', '),
       '--navy-lo-rgb': rgb(lo).join(', ')
     };
+    // White text sits on the pads: tone down a very light accent, and lift a buzzer colour that
+    // disappears into the background (or is nearly black).
+    const mid = lum(c.secondary) > 0.3 ? mix(c.secondary, '#000000', 0.35) : c.secondary;
+    vars['--horn-top'] = lum(c.accent) > 0.55 ? mix(c.accent, mid, 0.55) : c.accent;
+    vars['--horn-bottom'] = mid;
+    const buzz = dist(c.primary, c.background) < 70 || lum(c.primary) < 0.01 ? mix(c.primary, '#ffffff', 0.3) : c.primary;
+    vars['--buzz-top'] = mix(buzz, '#ffffff', 0.25);
+    vars['--buzz-bottom'] = mix(buzz, '#000000', 0.25);
+    // Same for the brand gradient behind START, the tabs and the selected chips.
+    const end = vars['--horn-top'];
+    vars['--grad'] = `linear-gradient(90deg, ${c.primary} 0%, ${mid} 62%, ${end} 100%)`;
+    vars['--grad-diag'] = `linear-gradient(135deg, ${c.primary} 0%, ${mid} 62%, ${end} 100%)`;
     const st = document.documentElement.style;
     Object.keys(vars).forEach(k => st.setProperty(k, vars[k]));
     const meta = document.querySelector('meta[name=theme-color]');
