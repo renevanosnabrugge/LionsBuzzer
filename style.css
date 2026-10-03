@@ -238,8 +238,8 @@ svg { display: block; }
   background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .07) 0 3px, transparent 3px 12px);
   pointer-events: none;
 }
-.pad-buzzer { background: linear-gradient(160deg, var(--blue-l), var(--blue-d)); }
-.pad-horn { background: linear-gradient(160deg, var(--green), var(--green-d)); }
+.pad-buzzer { background: linear-gradient(160deg, var(--buzz-top, var(--blue-l)), var(--buzz-bottom, var(--blue-d))); }
+.pad-horn { background: linear-gradient(160deg, var(--horn-top, var(--green)), var(--horn-bottom, var(--green-d))); }
 .pad.playing { animation: padglow .45s ease-in-out infinite alternate; }
 @keyframes padglow { to { filter: brightness(1.35); box-shadow: 0 0 0 4px #fff, 0 0 40px rgba(255, 255, 255, .5); } }
 
@@ -596,3 +596,9 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 }
 .sound-banner svg { width: 28px; height: 28px; flex: none; }
 @keyframes bannerpulse { to { box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 6px rgba(255, 205, 0, .35); } }
+
+/* Keep white text readable on light team colours. */
+.btn.start:not(.running) span, .pad span, .pad svg, .tab.on, .chips button.on, .seg button.on, .profile-select.on select {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+}
+.pad svg { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .45)); }
