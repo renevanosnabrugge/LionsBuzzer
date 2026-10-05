@@ -470,6 +470,58 @@
     if (file) importProfiles(file);
   });
 
+  // ---------- Team picker: tap the team name in the header ----------
+  function renderPicker() {
+    const box = $('teamList');
+    box.textContent = '';
+    const cur = active().id;
+    list().forEach(q => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'team-item' + (q.id === cur ? ' on' : '');
+      const logo = document.createElement('span');
+      logo.className = 'team-logo';
+      logo.style.background = q.colors.background;
+      if (q.logo) { const i = new Image(); i.src = q.logo; i.alt = ''; logo.appendChild(i); }
+      else logo.textContent = initials(q);
+      const name = document.createElement('span');
+      name.className = 'team-name';
+      name.textContent = q.name;
+      b.append(logo, name);
+      b.addEventListener('click', () => { select(q.id); $('teamPicker').close(); });
+      box.appendChild(b);
+    });
+  }
+  $('teamSwitch').addEventListener('click', () => {
+    if (document.body.classList.contains('running')) return; // no switching during play
+    hideHint();
+    renderPicker();
+    $('teamPicker').showModal();
+    const on = $('teamList').querySelector('.on');
+    if (on) on.scrollIntoView({ block: 'center' });
+  });
+  $('teamPickerClose').addEventListener('click', () => $('teamPicker').close());
+  $('teamPicker').addEventListener('click', e => { if (e.target === $('teamPicker')) $('teamPicker').close(); });
+
+  // One-time hint bubble under the team name. Shown once, on the first visit.
+  const HINT_KEY = 'ylTeamHintSeen';
+  let hintTimer = null;
+  function hideHint() {
+    clearTimeout(hintTimer);
+    $('teamHint').hidden = true;
+    try { localStorage.setItem(HINT_KEY, '1'); } catch (e) {}
+  }
+  let hintSeen = false;
+  try { hintSeen = localStorage.getItem(HINT_KEY) === '1'; } catch (e) {}
+  if (!hintSeen) {
+    setTimeout(() => {
+      if (document.body.classList.contains('running')) return;
+      $('teamHint').hidden = false;
+      hintTimer = setTimeout(hideHint, 15000);
+    }, 1200);
+  }
+  $('teamHint').addEventListener('click', () => $('teamSwitch').click());
+
   // ---------- Start-up ----------
   // Apply the last used profile straight away to avoid a flash of the wrong colours.
   try {

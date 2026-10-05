@@ -24,7 +24,7 @@ On a single device you can also upload a file under *Settings → Sounds*, which
 ### Team profiles
 
 Each profile has its own name, title, subtitle, logo and five colours (background, text, primary, secondary, accent). The timer works the same for every profile.
-Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profile** to create one; it starts as a copy of the selected profile and can be edited and deleted.
+Tap the **team name** at the top of the screen (▾) to switch teams quickly; on the first visit a bubble points this out. Switching is disabled while the clock runs. For more, open *Settings → Team*: pick a team from the dropdown, or tap **+ New profile** to create one; it starts as a copy of the selected profile and can be edited and deleted.
 
 - The built-in profiles come from `profiles.json` in the repository root, with logos in `logos/`: **Dordrecht Lions** (the default), Dutch and Belgian clubs (Alcmaria Flames, Amsterdam Tigers, Antwerpen Phantoms, Breda Yetis, Capitals Leeuwarden, Coldplay Sharks, Dragons Utrecht, Eindhoven Kemphanen, Heerenveen Flyers, HYC Herentals, Gijs Groningen, Leiden Lions, HIJS Den Haag, Nijmegen Devils, Red Eagles Den Bosch, Smoke Eaters Geleen, Tilburg Trappers, Zoetermeer Panters), **YetiLions** and **Neutral**. They are locked in the app; change them by editing `profiles.json`.
 - Logos in `logos/` are named after the team id (`logos/<id>.png`), trimmed and at most 640 px. Logos with a white background have it removed; logos with dark lines or text (Amsterdam, Utrecht, Tilburg) sit on a white plate so they show on dark backgrounds. The files as supplied are kept in `logos/originals/`.
@@ -36,8 +36,8 @@ Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profi
 ### Team icons and share links
 
 - The home-screen icon, tab icon and app name follow the selected team: choose the team first, then use *Add to Home Screen*.
-- A link preview (WhatsApp, etc.) can't know which team you picked, so the main link shows the default team (Dordrecht Lions). Each built-in team has its own share link, `team/<id>/` (for example `…/LionsBuzzer/team/tilburg-trappers/`), with that team's logo in the preview; opening it starts the app with that team. *Settings → Team → Share link for this team* shares it.
-- The icons in `icons/teams/` and the pages in `team/` are generated from `profiles.json` by `tools/build-assets.cjs` (needs Node and Playwright). Run it after changing `profiles.json` or a logo. If the site moves to a custom domain, change `BASE_URL` in that script (and the `og:` tags in `index.html`) and run it again.
+- A link preview (WhatsApp, etc.) can't know which team you picked, so the main link shows the default team (Dordrecht Lions). Each built-in team has its own share link, `team/<id>/` (for example `https://ijshockeyklok.nl/team/tilburg-trappers/`), with that team's logo in the preview; opening it starts the app with that team. *Settings → Team → Share link for this team* shares it.
+- The icons in `icons/teams/` and the pages in `team/` are generated from `profiles.json` by `tools/build-assets.cjs` (needs Node and Playwright). Run it after changing `profiles.json` or a logo. If the domain changes, change `BASE_URL` in that script (and the `og:` tags in `index.html`) and run it again.
 
 ### Sponsors
 
@@ -47,6 +47,13 @@ Open *Settings → Team* and pick a team from the dropdown, or tap **+ New profi
 - **Team sponsors** are listed in `profiles.json` under that team's `"sponsors"`. They only show in the strip while that team is selected, before the app sponsors, and never on the About page.
 - A sponsor looks like `{ "name": "Xebia", "logo": "sponsors/xebia.png", "url": "https://www.xebia.com", "text": "…" }`. Put sponsor logos in `sponsors/`.
 
+### Reporting problems
+
+*Help* and *About* have a **Report a problem** button. It offers two ways, both with technical details filled in (app version, page, team, clock settings, sound state, device and browser; no personal data):
+
+- **Email us**: a prefilled email to the contact address in `config.json`. No account needed.
+- **GitHub issue**: opens a new issue in this repository with the *Report a problem* form (`.github/ISSUE_TEMPLATE/bug_report.yml`), with the technical details prefilled. Needs a GitHub account.
+
 ### Help and About
 
 The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and the app sponsors. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
@@ -55,9 +62,9 @@ The **?** icon opens a help page with screenshots (`help/`). The **puck** icon o
 
 The app is in the root of the repository, so GitHub Pages serves it straight from `main`
 (**Settings → Pages → Deploy from a branch → `main` / root**). Every merge to `main` is published to
-`https://renevanosnabrugge.github.io/LionsBuzzer/`.
+**https://ijshockeyklok.nl/** (custom domain, set by the `CNAME` file; the old `renevanosnabrugge.github.io/LionsBuzzer/` address redirects there).
 
-To use a custom domain later, enter it under **Settings → Pages → Custom domain** and point the domain's DNS at GitHub Pages; GitHub then adds a `CNAME` file to the repository root. All paths in the app are relative, so it works on a custom domain without changes.
+All paths in the app are relative. Only the link previews need the full address: `BASE_URL` in `tools/build-assets.cjs` and the `og:` tags in `index.html` use `https://ijshockeyklok.nl/`. Change those (and run the script) if the domain ever changes.
 
 ## Running locally
 
