@@ -10,7 +10,7 @@
 //
 // Link previews (WhatsApp etc.) need absolute image URLs, so BASE_URL must be the site address.
 // Change it if the site moves to a custom domain.
-const BASE_URL = 'https://renevanosnabrugge.github.io/LionsBuzzer/';
+const BASE_URL = 'https://ijshockeyklok.nl/';
 
 const fs = require('fs');
 const path = require('path');

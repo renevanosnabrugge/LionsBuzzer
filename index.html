@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="app-version" content="yl-buzzer-v18">
 <meta name="theme-color" content="#103073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -14,8 +15,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Lions Buzzer">
 <meta property="og:description" content="Interval buzzer and match clock for ice hockey.">
-<meta property="og:url" content="https://renevanosnabrugge.github.io/LionsBuzzer/">
-<meta property="og:image" content="https://renevanosnabrugge.github.io/LionsBuzzer/icons/teams/dordrecht-lions-512.png">
+<meta property="og:url" content="https://ijshockeyklok.nl/">
+<meta property="og:image" content="https://ijshockeyklok.nl/icons/teams/dordrecht-lions-512.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta name="twitter:card" content="summary">
@@ -69,17 +70,18 @@
 
 <div class="app">
   <header class="top">
-    <div class="brand">
+    <button type="button" class="brand" id="teamSwitch" aria-label="Choose your team">
       <span class="emblem-wrap">
         <img class="emblem-img" id="logoImg" alt="" hidden>
         <svg class="emblem" id="logoFallback" viewBox="0 0 240 204" aria-hidden="true"><use href="#emblem"/></svg>
       </span>
       <div class="wordmark">
         <div class="wm-bar"></div>
-        <div class="wm-name" id="wmTitle">YETI LION</div>
+        <div class="wm-name"><span id="wmTitle">YETI LION</span><svg class="team-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="wm-sub"><span id="wmSub">ALLIANCE</span> <span class="wm-tag">· BUZZER</span></div>
       </div>
-    </div>
+    </button>
+    <div class="team-hint" id="teamHint" hidden>Tap here to choose your team</div>
     <div class="top-actions">
       <button class="icon-btn" id="aboutBtn" aria-label="About and donate">
         <svg><use href="#i-puck"/></svg>
@@ -143,6 +145,32 @@
 
 
 <div class="flash" id="flash"></div>
+
+<dialog class="sheet team-sheet" id="teamPicker">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2>Choose your team</h2>
+      <button type="button" class="btn small start" id="teamPickerClose">CLOSE</button>
+    </div>
+    <div class="team-list" id="teamList"></div>
+    <p class="hint">Make your own team style under Settings → Team.</p>
+  </div>
+</dialog>
+
+<dialog class="sheet report-sheet" id="reportModal">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2>Report a problem</h2>
+      <button type="button" class="btn small ghost" id="reportClose">CLOSE</button>
+    </div>
+    <p>Something not working? Let us know. We add some technical details (app version, device, browser, team and clock settings) so we can find the problem. No personal data.</p>
+    <div class="report-actions">
+      <a class="btn start" id="reportMail" href="#"><span>EMAIL US</span></a>
+      <a class="btn ghost" id="reportGithub" href="#" target="_blank" rel="noopener"><span>GITHUB ISSUE</span></a>
+    </div>
+    <p class="hint">Email needs no account. A GitHub issue needs a (free) GitHub account.</p>
+  </div>
+</dialog>
 
 <dialog class="sheet sponsor-sheet" id="sponsorModal">
   <div class="sheet-inner sponsor-card" id="sponsorCard"></div>
@@ -352,6 +380,7 @@
         <li><b>START</b> starts the clock. While it runs the button reads <b>PAUSE</b>; after a pause it reads <b>RESUME</b>.</li>
         <li><b>NEXT INTERVAL</b> moves the clock to the next whole interval, to get it back in line with the rink clock: with a 1-minute interval, 14:32 becomes 14:00 and 9:01 becomes 9:00. It does not sound the buzzer.</li>
         <li><b>RESET</b> sets the match back to the start (it asks first).</li>
+        <li>Tap the <b>team name</b> at the top to choose another team.</li>
         <li><b>BUZZER</b> and <b>GOAL HORN</b> play the sound right away. Tap again to stop it.</li>
         <li>The strip at the bottom shows our sponsors. Tap a logo for more about the sponsor. It fades out while the clock runs.</li>
       </ul>
@@ -409,6 +438,12 @@
         <li>With a keyboard: Space start/pause · N next interval · B buzzer · G goal horn.</li>
       </ul>
     </section>
+
+    <section class="help-sec">
+      <h3>Found a bug?</h3>
+      <p>Tell us what went wrong, by email or as a GitHub issue.</p>
+      <button type="button" class="btn small ghost report-btn">REPORT A PROBLEM</button>
+    </section>
   </div>
 </dialog>
 
@@ -428,6 +463,7 @@
       <h3>Our sponsors</h3>
       <div class="about-grid" id="aboutSponsors"></div>
     </section>
+    <button type="button" class="btn small ghost report-btn">REPORT A PROBLEM</button>
     <p class="about-maker" id="aboutMaker" hidden></p>
   </div>
 </dialog>
