@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="yl-buzzer-v18">
+<meta name="app-version" content="yl-buzzer-v19">
 <meta name="theme-color" content="#103073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -153,7 +153,15 @@
       <button type="button" class="btn small start" id="teamPickerClose">CLOSE</button>
     </div>
     <div class="team-list" id="teamList"></div>
-    <p class="hint">Make your own team style under Settings → Team.</p>
+    <div class="team-missing">
+      <h3>Don't see your team?</h3>
+      <p>Make your own team style with your colours and logo. It is saved on this device. Want it in the list for everyone? Export it and send it to us.</p>
+      <div class="team-missing-actions">
+        <button type="button" class="btn small start" id="teamMake">MAKE YOUR OWN TEAM</button>
+        <a class="btn small ghost" id="teamAsk" href="#">ASK US TO ADD IT</a>
+      </div>
+      <p class="hint">Tip: in Settings → Team, <b>Export for website (.zip)</b> packs your team with its logo. Attach that file to the email.</p>
+    </div>
   </div>
 </dialog>
 

@@ -712,3 +712,16 @@ body.running .team-chevron { opacity: .15; }
   .report-actions { grid-template-columns: 1fr; }
   .team-hint { left: 8px; font-size: 15px; }
 }
+
+/* "Don't see your team?" in the team picker */
+.team-missing {
+  display: grid; gap: 10px;
+  padding: 18px; border-radius: 18px;
+  border: 2px dashed rgba(255, 255, 255, .22);
+  background: rgba(255, 255, 255, .03);
+}
+.team-missing h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 24px; letter-spacing: .04em; color: var(--green); }
+.team-missing p { margin: 0; font-size: 18px; line-height: 1.45; }
+.team-missing-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.team-missing-actions .btn { flex: 1 1 220px; }
+.team-missing-actions .btn[hidden] { display: none; }

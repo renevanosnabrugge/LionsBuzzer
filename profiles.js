@@ -501,6 +501,26 @@
     if (on) on.scrollIntoView({ block: 'center' });
   });
   $('teamPickerClose').addEventListener('click', () => $('teamPicker').close());
+
+  // "Don't see your team?": make your own (Settings → Team) or ask us to add it.
+  $('teamMake').addEventListener('click', () => {
+    $('teamPicker').close();
+    $('settingsBtn').click();
+    const tab = document.querySelector('.tab[data-tab=team]');
+    if (tab) tab.click();
+  });
+  fetch('config.json', { cache: 'no-cache' }).then(r => (r.ok ? r.json() : {})).catch(() => ({})).then(cfg => {
+    const ask = $('teamAsk');
+    if (!cfg.contactEmail) { ask.hidden = true; return; }
+    ask.href = 'mailto:' + cfg.contactEmail +
+      '?subject=' + encodeURIComponent('Please add our team to the buzzer') +
+      '&body=' + encodeURIComponent([
+        'Hi! Please add our team to the buzzer.', '',
+        'Team name:', 'City:', 'Club colours:', 'Website:', '',
+        'Attached: our logo (a PNG with a transparent background works best),',
+        'or the team we made in the app (Settings → Team → Export for website (.zip)).'
+      ].join('\n'));
+  });
   $('teamPicker').addEventListener('click', e => { if (e.target === $('teamPicker')) $('teamPicker').close(); });
 
   // One-time hint bubble under the team name. Shown once, on the first visit.
