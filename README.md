@@ -1,4 +1,6 @@
-# Lions Buzzer 🦁🏒
+# IJshockeyklok 🦁🏒
+
+Live at **https://ijshockeyklok.nl/**. Made by volunteers of Dordrecht Lions.
 
 A loud interval buzzer and match clock for ice hockey, styled per team: Dordrecht Lions by default, plus Dutch and Belgian clubs, YetiLions and a Neutral style.
 It's built for an iPad and also works on phones and laptops.
@@ -62,7 +64,7 @@ The **?** icon opens a help page with screenshots (`help/`). The **puck** icon o
 
 The app is in the root of the repository, so GitHub Pages serves it straight from `main`
 (**Settings → Pages → Deploy from a branch → `main` / root**). Every merge to `main` is published to
-**https://ijshockeyklok.nl/** (custom domain, set by the `CNAME` file; the old `renevanosnabrugge.github.io/LionsBuzzer/` address redirects there).
+**https://ijshockeyklok.nl/** (custom domain, set by the `CNAME` file). The repository is `renevanosnabrugge/ijshockeyklok`.
 
 All paths in the app are relative. Only the link previews need the full address: `BASE_URL` in `tools/build-assets.cjs` and the `og:` tags in `index.html` use `https://ijshockeyklok.nl/`. Change those (and run the script) if the domain ever changes.
 

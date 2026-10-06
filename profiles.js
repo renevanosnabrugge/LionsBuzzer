@@ -381,10 +381,10 @@
     const data = { version: 1, default: defaultId, profiles: builtins.concat(added) };
     files.unshift({ name: 'profiles.json', data: enc.encode(JSON.stringify(data, null, 2) + '\n') });
     files.push({ name: 'README.txt', data: enc.encode(
-      'Unzip into the root of the LionsBuzzer repository, replacing profiles.json,\n' +
+      'Unzip into the root of the ijshockeyklok repository, replacing profiles.json,\n' +
       'then commit and push. The profiles from this device become built-in profiles\n' +
       'on the website (' + added.map(p => p.name).join(', ') + ').\n') });
-    download(zip(files), 'lionsbuzzer-profiles.zip');
+    download(zip(files), 'ijshockeyklok-profiles.zip');
   }
 
   // Minimal zip writer (no compression), enough for a few small files.

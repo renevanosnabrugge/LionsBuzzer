@@ -16,7 +16,7 @@
   });
 
   // ---------- Report a problem: email or GitHub issue, with technical details filled in ----------
-  const REPO = 'https://github.com/renevanosnabrugge/LionsBuzzer';
+  const REPO = 'https://github.com/renevanosnabrugge/ijshockeyklok';
   let contactEmail = '';
   function diagnostics() {
     let settings = {};
