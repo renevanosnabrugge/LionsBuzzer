@@ -113,7 +113,12 @@
     // White text sits on the pads: tone down a very light accent, and lift a buzzer colour that
     // disappears into the background (or is nearly black).
     const mid = lum(c.secondary) > 0.3 ? mix(c.secondary, '#000000', 0.35) : c.secondary;
-    vars['--horn-top'] = lum(c.accent) > 0.55 ? mix(c.accent, mid, 0.55) : c.accent;
+    // A bright, saturated accent (yellow) is darkened towards gold so it stays a clear colour;
+    // a pale one (near white) is blended with the secondary colour instead.
+    const chroma = h => { const v = rgb(h), mx = Math.max(...v), mn = Math.min(...v); return mx ? (mx - mn) / mx : 0; };
+    vars['--horn-top'] = lum(c.accent) > 0.55
+      ? (chroma(c.accent) > 0.5 ? mix(c.accent, '#000000', 0.32) : mix(c.accent, mid, 0.55))
+      : c.accent;
     vars['--horn-bottom'] = mid;
     const buzz = dist(c.primary, c.background) < 70 || lum(c.primary) < 0.01 ? mix(c.primary, '#ffffff', 0.3) : c.primary;
     vars['--buzz-top'] = mix(buzz, '#ffffff', 0.25);
