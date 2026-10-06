@@ -157,6 +157,20 @@
       }
     },
     {
+      "id": "ghent-dragons",
+      "name": "Ghent Dragons",
+      "title": "GHENT DRAGONS",
+      "subtitle": "IJSHOCKEY",
+      "logo": "logos/ghent-dragons.png",
+      "colors": {
+        "background": "#0b2a5c",
+        "text": "#ffffff",
+        "primary": "#0070c0",
+        "secondary": "#00468f",
+        "accent": "#ffd600"
+      }
+    },
+    {
       "id": "gijs-groningen",
       "name": "Gijs Groningen",
       "title": "GIJS GRONINGEN",
