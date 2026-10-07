@@ -37,6 +37,7 @@
     ].join('\n');
   }
   function openReport() {
+    lbTrack('report-open');
     const diag = diagnostics();
     const mail = $('reportMail');
     mail.hidden = !contactEmail;
@@ -50,6 +51,9 @@
   }
   document.querySelectorAll('.report-btn').forEach(b => b.addEventListener('click', openReport));
   $('reportClose').addEventListener('click', () => $('reportModal').close());
+  $('reportMail').addEventListener('click', () => lbTrack('report-email'));
+  $('reportGithub').addEventListener('click', () => lbTrack('report-github'));
+  $('coffeeLink').addEventListener('click', () => lbTrack('donate-click'));
   $('reportModal').addEventListener('click', e => { if (e.target === $('reportModal')) $('reportModal').close(); });
 
   // Donation link, contact and maker come from config.json, so they can be changed without code.

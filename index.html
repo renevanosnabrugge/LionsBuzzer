@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="yl-buzzer-v21">
+<meta name="app-version" content="yl-buzzer-v22">
 <meta name="theme-color" content="#103073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -24,6 +24,8 @@
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
+<!-- Anonymous statistics (Umami): no cookies, no personal data, Do Not Track respected. Only counts on the live site. -->
+<script defer id="umami" src="https://cloud.umami.is/script.js" data-website-id="834ba87f-406c-4f79-a81a-de65affe17aa" data-domains="ijshockeyklok.nl,www.ijshockeyklok.nl" data-do-not-track="true"></script>
 </head>
 <body>
 
@@ -471,11 +473,13 @@
       <h3>Our sponsors</h3>
       <div class="about-grid" id="aboutSponsors"></div>
     </section>
+    <p class="privacy-note">We count visits anonymously with Umami: no cookies, no personal data, and "Do Not Track" is respected.</p>
     <button type="button" class="btn small ghost report-btn">REPORT A PROBLEM</button>
     <p class="about-maker" id="aboutMaker" hidden></p>
   </div>
 </dialog>
 
+<script src="stats.js"></script>
 <script src="profiles.js"></script>
 <script src="pages.js"></script>
 <script src="sponsors.js"></script>

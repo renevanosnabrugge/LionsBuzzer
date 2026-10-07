@@ -19,6 +19,7 @@
 <script>
   // Select this team in the app, then open it.
   try { localStorage.setItem('ylProfile', "hijs-den-haag"); localStorage.removeItem('ylProfileCache'); } catch (e) {}
+  try { sessionStorage.setItem('ylFromLink', "hijs-den-haag"); } catch (e) {}
   location.replace('../../');
 </script>
 </head>

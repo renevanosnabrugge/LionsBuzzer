@@ -725,3 +725,6 @@ body.running .team-chevron { opacity: .15; }
 .team-missing-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .team-missing-actions .btn { flex: 1 1 220px; }
 .team-missing-actions .btn[hidden] { display: none; }
+
+/* Privacy note on the About page */
+.privacy-note { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.4; }
