@@ -28,6 +28,17 @@
 
   const tag = document.getElementById('umami');
   if (tag) tag.addEventListener('load', flush);
+
+  // What happened to the Umami script tag, for the troubleshooting view (#stats).
+  const state = { tag: 'waiting', crashed: 0 };
+  if (tag) {
+    tag.addEventListener('load', () => { state.tag = 'loaded'; });
+    tag.addEventListener('error', () => { state.tag = 'failed'; });
+  }
+  window.addEventListener('error', e => {
+    if (e.target && e.target.id === 'umami') state.tag = 'failed';                      // the script could not be loaded
+    else if (e.message === 'Script error.' && !e.filename) state.crashed++;             // a cross-origin script threw
+  }, true);
   window.addEventListener('load', () => setTimeout(flush, 800));
 
   // Arrived through a team share link (team/<id>/ sets this flag, then opens the app).
@@ -78,6 +89,7 @@
     let reach;   // undefined = still checking
     function render() {
       const loaded = !!(window.umami && typeof window.umami.track === 'function');
+      const seen = (performance.getEntriesByType('resource') || []).some(r => r.name.indexOf('cloud.umami.is/script.js') >= 0);
       const counted = !domains.length || domains.includes(location.hostname);
       rows.textContent = '';
       rows.append(
@@ -85,7 +97,11 @@
         row('Do Not Track', dntRaw ? String(dntRaw) + (dnt ? '  (statistics are OFF for you)' : '') : 'not set', !dnt),
         row('Switched off by hand', disabled ? 'yes (umami.disabled)' : 'no', !disabled),
         row('Umami script reachable', reach === undefined ? 'checking…' : reach ? 'yes' : 'NO (blocked by an ad blocker, tracking prevention or the network)', reach === undefined ? null : reach),
-        row('Umami script loaded', loaded ? 'yes' : 'NO', loaded)
+        row('Umami script tag', state.tag === 'loaded' ? 'loaded' : state.tag === 'failed' ? 'FAILED to load (blocked as a script)' : 'still loading…', state.tag === 'loaded' ? true : state.tag === 'failed' ? false : null),
+        row('Umami script errors', state.crashed ? 'yes: the script crashed (' + state.crashed + ')' : 'none', !state.crashed),
+        row('Request seen by browser', seen ? 'yes' : 'no', seen),
+        row('Umami ready (window.umami)', loaded ? 'yes' : 'NO', loaded),
+        row('Browser', navigator.userAgent.replace(/^Mozilla\/5\.0 /, ''), null)
       );
       events.textContent = log.length
         ? log.slice().reverse().map(e => e.at.toTimeString().slice(0, 8) + '  ' + e.name + (e.data ? ' ' + JSON.stringify(e.data) : '')).join('\n')
