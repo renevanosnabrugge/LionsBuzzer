@@ -26,7 +26,8 @@
   // Built-in teams are reported by name; a team made on a device is only reported as "custom".
   window.lbTeamLabel = () => (window.__lbTeam && window.__lbTeam.builtin ? window.__lbTeam.name : 'custom');
 
-  const tag = document.getElementById('umami');
+  // Note: the tag must not have id="umami": the browser would make window.umami the element, and Umami then never installs umami.track.
+  const tag = document.getElementById('umami-script');
   if (tag) tag.addEventListener('load', flush);
 
   // What happened to the Umami script tag, for the troubleshooting view (#stats).
@@ -36,7 +37,7 @@
     tag.addEventListener('error', () => { state.tag = 'failed'; });
   }
   window.addEventListener('error', e => {
-    if (e.target && e.target.id === 'umami') state.tag = 'failed';                      // the script could not be loaded
+    if (e.target && e.target.id === 'umami-script') state.tag = 'failed';                      // the script could not be loaded
     else if (e.message === 'Script error.' && !e.filename) state.crashed++;             // a cross-origin script threw
   }, true);
   window.addEventListener('load', () => setTimeout(flush, 800));
@@ -54,7 +55,7 @@
 
   // ---------- Troubleshooting: open the app with #stats to see why statistics might not arrive ----------
   function showDiagnostics() {
-    const tagEl = document.getElementById('umami');
+    const tagEl = document.getElementById('umami-script');
     const domains = ((tagEl && tagEl.dataset.domains) || '').split(',').map(x => x.trim()).filter(Boolean);
     const dntRaw = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
     const dnt = dntRaw === '1' || dntRaw === 1 || dntRaw === 'yes';
