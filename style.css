@@ -728,3 +728,21 @@ body.running .team-chevron { opacity: .15; }
 
 /* Privacy note on the About page */
 .privacy-note { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.4; }
+
+/* Statistics troubleshooting view (open the app with #stats) */
+#statsDebug {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 60;
+  max-width: 560px; margin: 0 auto; padding: 14px 16px;
+  border-radius: 16px; background: rgba(8, 14, 28, .96); color: #fff;
+  border: 1px solid rgba(255, 255, 255, .25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .6);
+  font: 600 15px/1.35 system-ui, sans-serif;
+}
+#statsDebug .sd-title { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; color: #9fb2cf; }
+#statsDebug .sd-row { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+#statsDebug .sd-row b { text-align: right; }
+#statsDebug .sd-row.ok b { color: #5ce08a; }
+#statsDebug .sd-row.bad b { color: #ff7b7b; }
+#statsDebug pre { margin: 10px 0; padding: 8px; max-height: 120px; overflow: auto; background: rgba(255, 255, 255, .06); border-radius: 8px; font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; }
+#statsDebug .sd-actions { display: flex; gap: 8px; }
+#statsDebug button { flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .1); color: #fff; font: 800 15px system-ui; }
