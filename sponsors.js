@@ -58,6 +58,7 @@
   }
 
   function showSponsor(s, kind) {
+    lbTrack('sponsor-open', { sponsor: s.name, kind });
     open(card => {
       card.appendChild(el('div', 'sponsor-tag', kind === 'team' ? 'Team sponsor · ' + team.name : 'App sponsor'));
       if (s.logo) { const img = el('img', 'sponsor-logo'); img.src = s.logo; img.alt = s.name; card.appendChild(img); }
@@ -68,6 +69,7 @@
         const a = el('a', 'btn small start', 'VISIT WEBSITE');
         a.href = /^https?:\/\//.test(s.url) ? s.url : 'https://' + s.url;
         a.target = '_blank'; a.rel = 'noopener';
+        a.addEventListener('click', () => lbTrack('sponsor-visit', { sponsor: s.name }));
         actions.appendChild(a);
       }
       card.appendChild(actions);
@@ -75,6 +77,7 @@
   }
 
   function showInvite() {
+    lbTrack('sponsor-invite');
     open(card => {
       card.appendChild(el('div', 'sponsor-tag', 'Sponsoring'));
       card.appendChild(el('div', 'sponsor-dash', 'YOUR LOGO HERE'));
@@ -89,6 +92,8 @@
         card.appendChild(p);
         const btn = el('a', 'btn small start', 'MAIL US');
         btn.href = a.href;
+        const mailed = () => lbTrack('sponsor-mail');
+        a.addEventListener('click', mailed); btn.addEventListener('click', mailed);
         actions.appendChild(btn);
       }
       card.appendChild(actions);

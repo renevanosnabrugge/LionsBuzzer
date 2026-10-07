@@ -52,6 +52,7 @@ function teamPage(p) {
 <script>
   // Select this team in the app, then open it.
   try { localStorage.setItem('ylProfile', ${JSON.stringify(p.id)}); localStorage.removeItem('ylProfileCache'); } catch (e) {}
+  try { sessionStorage.setItem('ylFromLink', ${JSON.stringify(p.id)}); } catch (e) {}
   location.replace('../../');
 </script>
 </head>

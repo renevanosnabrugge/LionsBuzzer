@@ -139,7 +139,7 @@
     showLogo($('logoImg'), $('logoFallback'), p.logo);
     showLogo($('ftLogo'), $('ftFallback'), p.logo);
     // Let the sponsor strip know which team is shown (team sponsors only count for built-in teams).
-    window.__lbTeam = { name: p.name, sponsors: isBuiltin(p.id) ? (p.sponsors || []) : [] };
+    window.__lbTeam = { name: p.name, builtin: isBuiltin(p.id), sponsors: isBuiltin(p.id) ? (p.sponsors || []) : [] };
     window.dispatchEvent(new CustomEvent('lb:profile', { detail: window.__lbTeam }));
     clearTimeout(iconTimer);
     iconTimer = setTimeout(() => setAppIcon(p), 300);
@@ -257,11 +257,14 @@
     render();
   }
 
-  function select(id) {
+  // `how` is set when the person chose the team (picker or settings), for the usage statistics.
+  function select(id, how) {
+    const before = active().id;
     activeId = id;
     apply(active());
     save();
     render();
+    if (how && id !== before) lbTrack('team-selected', { team: isBuiltin(id) ? active().name : 'custom', via: how });
   }
 
   // ---------- Settings UI ----------
@@ -280,7 +283,7 @@
       b.type = 'button';
       b.textContent = q.name;
       b.classList.toggle('on', q.id === p.id);
-      b.addEventListener('click', () => select(q.id));
+      b.addEventListener('click', () => select(q.id, 'settings'));
       chips.appendChild(b);
     });
     const add = document.createElement('button');
@@ -465,7 +468,7 @@
   });
   $('pfLogoRemove').addEventListener('click', () => update({ logo: '' }));
   $('pfDelete').addEventListener('click', deleteProfile);
-  $('profileSelect').addEventListener('change', e => { if (e.target.value) select(e.target.value); });
+  $('profileSelect').addEventListener('change', e => { if (e.target.value) select(e.target.value, 'settings'); });
   $('pfShare').addEventListener('click', shareTeam);
   $('pfExport').addEventListener('click', exportProfiles);
   $('pfExportSite').addEventListener('click', exportForWebsite);
@@ -493,7 +496,7 @@
       name.className = 'team-name';
       name.textContent = q.name;
       b.append(logo, name);
-      b.addEventListener('click', () => { select(q.id); $('teamPicker').close(); });
+      b.addEventListener('click', () => { select(q.id, 'picker'); $('teamPicker').close(); });
       box.appendChild(b);
     });
   }

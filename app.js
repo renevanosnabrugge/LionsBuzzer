@@ -45,6 +45,7 @@
   let hc = { ct: 0, moved: 0 };   // last seen audio clock, and when it last moved
 
   function newContext() {
+    const rebuilt = !!ac;
     if (ac && ac.state !== 'closed') ac.close().catch(() => {});
     keepAliveNode = null;
     ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -52,6 +53,7 @@
     broken = false;
     hc = { ct: ac.currentTime, moved: performance.now() };
     if (keepAliveWanted) startKeepAlive();
+    if (rebuilt) lbTrack('audio-rebuilt');
   }
 
   function audio() {
@@ -90,7 +92,9 @@
 
   function updateSoundBanner() {
     const off = unlocked && ac && (broken || ac.state !== 'running');
+    const was = !$('soundBanner').hidden;
     $('soundBanner').hidden = !off;
+    if (off && !was) lbTrack('audio-banner');
   }
 
   // Any tap: (re)start audio while we are allowed to, and play a silent sound to unlock it.
@@ -344,6 +348,7 @@
 
   function start() {
     if (st.ended) return;
+    if (st.acc === 0) lbTrack('match-start', { team: lbTeamLabel(), minutes: S.matchMin });
     keepAlive(true);
     st.running = true;
     st.startedAt = performance.now();
@@ -388,6 +393,7 @@
   }
 
   function endMatch() {
+    lbTrack('match-end', { team: lbTeamLabel(), minutes: S.matchMin });
     st.running = false;
     keepAlive(false);
     st.acc = matchMs();
@@ -504,6 +510,7 @@
       }
       h = play(pad.dataset.sound);
       if (!h) return;
+      lbTrack('sound-pad', { sound: pad.dataset.sound });
       pad.classList.add('playing');
       clearTimeout(timer);
       timer = setTimeout(() => pad.classList.remove('playing'), h.endsAt - performance.now());

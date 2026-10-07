@@ -56,6 +56,25 @@ Tap the **team name** at the top of the screen (▾) to switch teams quickly; on
 - **Email us**: a prefilled email to the contact address in `config.json`. No account needed.
 - **GitHub issue**: opens a new issue in this repository with the *Report a problem* form (`.github/ISSUE_TEMPLATE/bug_report.yml`), with the technical details prefilled. Needs a GitHub account.
 
+### Statistics
+
+Anonymous usage statistics come from [Umami](https://umami.is/) (script tag in `index.html`, website id in its `data-website-id`). No cookies, no personal data, and "Do Not Track" is respected; the About page says so. It only counts on `ijshockeyklok.nl` (`data-domains`), so tests and previews don't show up. In the Umami dashboard: **Overview** has visits and devices, **Events** has the events below.
+
+`stats.js` provides `lbTrack(name, data)`. Events are queued until the Umami script has loaded and dropped silently when it can't (offline, blocked); the app never depends on it.
+
+| Event | Data | When |
+|---|---|---|
+| `team-selected` | `team`, `via` (picker / settings) | A team is chosen. Teams made on a device are reported as `custom`, never by name |
+| `team-link` | `team` (id) | The app is opened through a team share link |
+| `match-start`, `match-end` | `team`, `minutes` | A match is started from 0, or reaches full time |
+| `sound-pad` | `sound` (buzzer / horn) | A sound pad is tapped |
+| `sponsor-open`, `sponsor-visit` | `sponsor`, `kind` | A sponsor logo is tapped / its website button is tapped |
+| `sponsor-invite`, `sponsor-mail` | | "Your logo here" is tapped / the sponsor email is tapped |
+| `report-open`, `report-email`, `report-github` | | Report a problem |
+| `donate-click` | | Buy me a puck |
+| `opened-as-app` | | Opened from the home screen |
+| `audio-rebuilt`, `audio-banner` | | The phone broke the sound and the app repaired it / asked for a tap |
+
 ### Help and About
 
 The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and the app sponsors. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.

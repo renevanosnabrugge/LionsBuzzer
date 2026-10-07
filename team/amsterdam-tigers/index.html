@@ -19,6 +19,7 @@
 <script>
   // Select this team in the app, then open it.
   try { localStorage.setItem('ylProfile', "amsterdam-tigers"); localStorage.removeItem('ylProfileCache'); } catch (e) {}
+  try { sessionStorage.setItem('ylFromLink', "amsterdam-tigers"); } catch (e) {}
   location.replace('../../');
 </script>
 </head>
