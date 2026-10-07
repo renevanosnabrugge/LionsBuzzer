@@ -746,3 +746,5 @@ body.running .team-chevron { opacity: .15; }
 #statsDebug pre { margin: 10px 0; padding: 8px; max-height: 120px; overflow: auto; background: rgba(255, 255, 255, .06); border-radius: 8px; font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; }
 #statsDebug .sd-actions { display: flex; gap: 8px; }
 #statsDebug button { flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .1); color: #fff; font: 800 15px system-ui; }
+#statsDebug .sd-row b { word-break: break-word; }
+#statsDebug .sd-row:last-of-type b { font-size: 11px; font-weight: 600; }

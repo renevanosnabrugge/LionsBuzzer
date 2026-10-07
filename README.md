@@ -75,7 +75,7 @@ Anonymous usage statistics come from [Umami](https://umami.is/) (script tag in `
 | `opened-as-app` | | Opened from the home screen |
 | `audio-rebuilt`, `audio-banner` | | The phone broke the sound and the app repaired it / asked for a tap |
 
-**Nothing shows up in Umami?** Open the app with `#stats` at the end of the address (`https://ijshockeyklok.nl/#stats`). The *Statistics check* panel shows the address (only `ijshockeyklok.nl` is counted), "Do Not Track" (if on, Umami ignores you), whether the Umami script can be reached (an ad blocker, the browser's tracking prevention or a DNS filter can block `cloud.umami.is`) and loaded, and the last events. **Send test event** sends an event called `stats-test`; look for it in Umami's *Realtime* and *Events* views.
+**Nothing shows up in Umami?** Open the app with `#stats` at the end of the address (`https://ijshockeyklok.nl/#stats`). The *Statistics check* panel shows the address (only `ijshockeyklok.nl` is counted), "Do Not Track" (if on, Umami ignores you), whether the Umami script can be reached (an ad blocker, the browser's tracking prevention or a DNS filter can block `cloud.umami.is`) and loaded (and whether the script tag failed to load, which means it was blocked as a script, or the script crashed), the browser, and the last events. **Send test event** sends an event called `stats-test`; look for it in Umami's *Realtime* and *Events* views.
 
 ### Help and About
 
