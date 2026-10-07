@@ -75,6 +75,8 @@ Anonymous usage statistics come from [Umami](https://umami.is/) (script tag in `
 | `opened-as-app` | | Opened from the home screen |
 | `audio-rebuilt`, `audio-banner` | | The phone broke the sound and the app repaired it / asked for a tap |
 
+**Nothing shows up in Umami?** Open the app with `#stats` at the end of the address (`https://ijshockeyklok.nl/#stats`). The *Statistics check* panel shows the address (only `ijshockeyklok.nl` is counted), "Do Not Track" (if on, Umami ignores you), whether the Umami script can be reached (an ad blocker, the browser's tracking prevention or a DNS filter can block `cloud.umami.is`) and loaded, and the last events. **Send test event** sends an event called `stats-test`; look for it in Umami's *Realtime* and *Events* views.
+
 ### Help and About
 
 The **?** icon opens a help page with screenshots (`help/`). The **puck** icon opens the About page: who made the app, a **Buy me a puck** donation button (Ko-fi) and the app sponsors. The donation link, contact email and maker name are set in `config.json`; empty values are hidden.
