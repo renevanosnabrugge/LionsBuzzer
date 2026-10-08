@@ -23,7 +23,9 @@
   const saveSettings = () => { try { localStorage.setItem('ylBuzzer', JSON.stringify(S)); } catch (e) {} };
 
   const matchMs = () => S.matchMin * 60000;
-  const intervalMs = () => S.intervalSec * 1000;
+  // Interval 0 = none: the whole match is one interval, with no ring, no signal and no Next interval.
+  const hasInterval = () => S.intervalSec > 0;
+  const intervalMs = () => hasInterval() ? S.intervalSec * 1000 : matchMs();
 
   // ---------- Audio ----------
   let ac = null;
@@ -381,7 +383,7 @@
   // Jump the clock to the end of the current interval (e.g. 14:32 -> 14:00),
   // to bring it back in line with the rink clock. Silent: it is a correction.
   function nextInterval() {
-    if (st.ended) return;
+    if (st.ended || !hasInterval()) return;
     const target = slot(elapsed()).hi;
     if (target >= matchMs()) { endMatch(); return; }
     st.acc = target;
@@ -402,7 +404,7 @@
     play(S.endSound);
     flash();
     const n = Math.ceil(matchMs() / intervalMs());
-    $('ftSub').textContent = S.matchMin + ' min · ' + n + (n === 1 ? ' interval' : ' intervals');
+    $('ftSub').textContent = S.matchMin + ' min' + (hasInterval() ? ' · ' + n + (n === 1 ? ' interval' : ' intervals') : '');
     setTimeout(() => { if (st.ended) $('fulltime').hidden = false; }, 600);
     render();
   }
@@ -453,6 +455,7 @@
   }
 
   function render() {
+    document.body.classList.toggle('no-interval', !hasInterval());
     const e = Math.min(elapsed(), matchMs());
     const cur = slot(Math.min(e, matchMs() - 1));
     const len = Math.max(1, cur.hi - cur.lo);
@@ -566,7 +569,7 @@
 
   const fmtSetting = {
     matchMin: v => v + ' min',
-    intervalSec: v => mmss(v * 1000)
+    intervalSec: v => v > 0 ? mmss(v * 1000) : 'None'
   };
 
   function setSetting(key, v) {
@@ -580,6 +583,7 @@
   function renderSettings() {
     $('matchMinOut').textContent = fmtSetting.matchMin(S.matchMin);
     $('intervalSecOut').textContent = fmtSetting.intervalSec(S.intervalSec);
+    $('intervalSoundField').hidden = !hasInterval();
     document.querySelectorAll('.chips[data-key], .seg[data-key]').forEach(group => {
       const val = String(S[group.dataset.key]);
       group.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === val));

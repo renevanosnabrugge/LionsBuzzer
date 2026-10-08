@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="yl-buzzer-v25">
+<meta name="app-version" content="yl-buzzer-v26">
 <meta name="theme-color" content="#103073">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -240,12 +240,13 @@
 
       <div class="field">
         <div class="field-label">Interval</div>
-        <div class="stepper" data-key="intervalSec" data-step="5" data-min="5" data-max="1200">
+        <div class="stepper" data-key="intervalSec" data-step="5" data-min="0" data-max="1200">
           <button type="button" data-dir="-1" aria-label="Less">−</button>
           <output id="intervalSecOut">1:00</output>
           <button type="button" data-dir="1" aria-label="More">+</button>
         </div>
         <div class="chips" data-key="intervalSec">
+          <button type="button" data-v="0">None</button>
           <button type="button" data-v="30">0:30</button>
           <button type="button" data-v="45">0:45</button>
           <button type="button" data-v="60">1:00</button>
@@ -264,7 +265,7 @@
 
     </div>
     <div class="tab-panel" data-panel="sounds" hidden>
-      <div class="field">
+      <div class="field" id="intervalSoundField">
         <div class="field-label">Sound every interval</div>
         <div class="seg-row">
           <div class="seg" data-key="intervalSound">
@@ -412,7 +413,7 @@
       <h3>Settings: Match</h3>
       <img src="help/settings-match.jpg" alt="Match settings" loading="lazy">
       <ul>
-        <li><b>Match time</b> and <b>Interval</b>: tap − or +, hold to go faster, or pick a preset.</li>
+        <li><b>Match time</b> and <b>Interval</b>: tap − or +, hold to go faster, or pick a preset. Choose <b>None</b> for the interval if you only want the match clock: the interval ring, the interval sound and the Next interval button then disappear.</li>
         <li><b>Clock</b>: count down (default) or count up.</li>
       </ul>
     </section>

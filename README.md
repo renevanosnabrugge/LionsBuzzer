@@ -8,7 +8,7 @@ It's built for an iPad and also works on phones and laptops.
 ## Features
 
 - **Match clock**: configurable match length. Shows tenths in the last minute and plays the end-of-match sound at full time.
-- **Interval clock**: configurable interval, with a countdown ring that pulses in the last 5 seconds. The interval sound plays and the screen flashes at every interval.
+- **Interval clock**: configurable interval (or **None** if you only want the match clock: the ring, the interval sound and *Next interval* then disappear and the match clock gets bigger), with a countdown ring that pulses in the last 5 seconds. The interval sound plays and the screen flashes at every interval.
 - **Clock direction**: count down (default) or count up, set in the settings.
 - **Next interval**: moves the clock to the next whole interval, to keep it in line with the rink clock. Counting down with a 1-minute interval: 14:32 → 14:00, 9:01 → 9:00, 14:00 → 13:00. Counting up: 5:28 → 6:00. This is a silent correction; the clock keeps its running or paused state. Intervals always line up with the clock as displayed.
 - **Sounds**: a loud arena **buzzer** (default for intervals) and an arena **goal horn** (default for the end of the match). Each has a big tap pad; tap again to stop it. The Goal horn pad also starts a full-screen **GOAL!** light show (tap to stop). You can replace the buzzer and the goal horn with your own mp3/wav under *Settings → Sounds*; the files are remembered on the device.
