@@ -378,12 +378,18 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 
 .hint { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.4; }
 .hint b { color: var(--white); }
 
+/* No interval: only the match clock (no ring, no Next interval). */
+.no-interval .ring-wrap, .no-interval #nextBtn { display: none; }
+.no-interval .match-time { font-size: clamp(96px, 22vw, 220px); }
+.no-interval .match { padding-top: 22px; padding-bottom: 24px; }
+
 /* ---------- Layouts ---------- */
 /* iPad landscape and wide screens: clocks left, controls right. */
 @media (min-width: 820px) and (orientation: landscape) {
   .board { grid-template-columns: 1.1fr 1fr; align-items: center; gap: 28px; }
   .ring-wrap { --ring: min(44vh, 36vw, 440px); }
   .match-time { font-size: clamp(72px, 9vw, 132px); }
+  .no-interval .match-time { font-size: clamp(110px, 15vw, 230px); }
 }
 @media (min-width: 820px) and (orientation: landscape) and (max-height: 760px) {
   .clocks { gap: 12px; }
