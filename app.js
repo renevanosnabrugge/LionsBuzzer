@@ -311,6 +311,25 @@
     const p = ctx.decodeAudioData(data, done(res), done(rej));
     if (p && typeof p.then === 'function') p.then(done(res), done(rej));
   });
+  // Safari's decoder can choke on what precedes the audio in an mp3 (a big ID3 tag with cover art,
+  // padding). Cut everything before the first mp3 frame and try again.
+  function stripMp3Header(buf) {
+    const b = new Uint8Array(buf);
+    let i = 0;
+    if (b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33) {   // "ID3" + syncsafe size
+      i = 10 + ((b[6] & 0x7f) << 21 | (b[7] & 0x7f) << 14 | (b[8] & 0x7f) << 7 | (b[9] & 0x7f));
+    }
+    while (i + 1 < b.length && !(b[i] === 0xff && (b[i + 1] & 0xe0) === 0xe0)) i++;
+    return i > 0 && i < b.length ? buf.slice(i) : null;
+  }
+  async function decodeFile(data) {
+    try { return await decode(data.slice(0)); } catch (err) {
+      const bare = stripMp3Header(data);
+      if (!bare) throw err;
+      try { return await decode(bare); } catch (e2) { throw err; }
+    }
+  }
+
   // Older Safari has no File.arrayBuffer().
   const readFile = file => file.arrayBuffer ? file.arrayBuffer() : new Promise((res, rej) => {
     const r = new FileReader();
@@ -320,7 +339,7 @@
   });
 
   async function loadCustom(name, fileName, data) {
-    custom[name] = { buffer: await decode(data.slice(0)), fileName };
+    custom[name] = { buffer: await decodeFile(data), fileName };
     renderSounds();
   }
 
