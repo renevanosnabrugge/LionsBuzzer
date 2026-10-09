@@ -45,6 +45,7 @@
   let unlocked = false;
   let keepAliveWanted = false, keepAliveNode = null;
   let hc = { ct: 0, moved: 0 };   // last seen audio clock, and when it last moved
+  let ctxBorn = 0;                // when the current audio context was made
 
   function newContext() {
     const rebuilt = !!ac;
@@ -53,6 +54,7 @@
     ac = new (window.AudioContext || window.webkitAudioContext)();
     ac.onstatechange = updateSoundBanner;
     broken = false;
+    ctxBorn = performance.now();
     hc = { ct: ac.currentTime, moved: performance.now() };
     if (keepAliveWanted) startKeepAlive();
     if (rebuilt) lbTrack('audio-rebuilt');
@@ -100,10 +102,14 @@
   }
 
   // Any tap: (re)start audio while we are allowed to, and play a silent sound to unlock it.
+  // Safari only counts click/touchend/keydown as a gesture that may start audio (not pointerdown),
+  // so we listen to those too, and a context made a moment ago by pointerdown is resumed rather
+  // than thrown away, so the click that follows can start it.
   function onTap() {
     unlocked = true;
     // A tap is the only moment iOS lets a new channel start, so replace anything not running.
-    if (ac && (ac.state !== 'running' || broken)) newContext();
+    const fresh = performance.now() - ctxBorn < 1500;
+    if (ac && (ac.state !== 'running' || broken) && (!fresh || ac.state === 'closed' || broken)) newContext();
     const a = audio();
     try {
       const s = a.createBufferSource();
@@ -113,8 +119,7 @@
     } catch (e) {}
     setTimeout(updateSoundBanner, 300);
   }
-  window.addEventListener('pointerdown', onTap, true);
-  window.addEventListener('keydown', onTap, true);
+  ['pointerdown', 'click', 'touchend', 'keydown'].forEach(t => window.addEventListener(t, onTap, true));
 
   // Coming back to the app (after a call, the lock screen, another app): check right away.
   const onReturn = () => { if (document.visibilityState === 'visible' && ac) { hc = { ct: ac.currentTime, moved: performance.now() }; healthCheck(); } };
@@ -257,7 +262,7 @@
     try {
       const res = await fetch(url);
       if (!res.ok) return;
-      recorded[name] = await audio().decodeAudioData(await res.arrayBuffer());
+      recorded[name] = await decode(await res.arrayBuffer());
     } catch (e) { /* not present (or opened from file://): keep the synthesized sound */ }
   }
 
@@ -293,8 +298,21 @@
 
   const SOUNDS = ['buzzer', 'horn'];
 
+  // Older Safari only knows decodeAudioData with callbacks; newer ones return a promise.
+  const decode = data => new Promise((res, rej) => {
+    const p = audio().decodeAudioData(data, res, rej);
+    if (p && typeof p.then === 'function') p.then(res, rej);
+  });
+  // Older Safari has no File.arrayBuffer().
+  const readFile = file => file.arrayBuffer ? file.arrayBuffer() : new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsArrayBuffer(file);
+  });
+
   async function loadCustom(name, fileName, data) {
-    custom[name] = { buffer: await audio().decodeAudioData(data.slice(0)), fileName };
+    custom[name] = { buffer: await decode(data.slice(0)), fileName };
     renderSounds();
   }
 
@@ -652,11 +670,12 @@
       e.target.value = '';
       if (!file) return;
       try {
-        const data = await file.arrayBuffer();
+        const data = await readFile(file);
         await loadCustom(name, file.name, data);
         try { await dbDo('readwrite', st => st.put({ name: file.name, data }, 'custom-' + name)); } catch (err) {}
       } catch (err) {
-        row.querySelector('.custom-name').textContent = 'Could not read that file';
+        // Safari is picky about audio files: say so, and suggest a format it likes.
+        row.querySelector('.custom-name').textContent = 'Could not use that file (' + ((err && err.name) || 'error') + '). Try an mp3 or m4a.';
       }
     });
     row.querySelector('.use-builtin').addEventListener('click', async () => {
