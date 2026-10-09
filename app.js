@@ -298,10 +298,18 @@
 
   const SOUNDS = ['buzzer', 'horn'];
 
+  // Decode on an offline context: Safari can leave decodeAudioData waiting forever on a context
+  // that is not running yet (picking a file is not a tap, so the real one may still be suspended),
+  // and an offline context does not care. The buffer plays on any context.
   // Older Safari only knows decodeAudioData with callbacks; newer ones return a promise.
   const decode = data => new Promise((res, rej) => {
-    const p = audio().decodeAudioData(data, res, rej);
-    if (p && typeof p.then === 'function') p.then(res, rej);
+    const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    let ctx;
+    try { ctx = new Offline(1, 1, 44100); } catch (e) { ctx = audio(); }
+    const timer = setTimeout(() => rej(new Error('timeout')), 15000);
+    const done = fn => v => { clearTimeout(timer); fn(v); };
+    const p = ctx.decodeAudioData(data, done(res), done(rej));
+    if (p && typeof p.then === 'function') p.then(done(res), done(rej));
   });
   // Older Safari has no File.arrayBuffer().
   const readFile = file => file.arrayBuffer ? file.arrayBuffer() : new Promise((res, rej) => {
@@ -667,15 +675,18 @@
     row.querySelector('.play-sound').addEventListener('click', () => play(name));
     row.querySelector('input[type=file]').addEventListener('change', async e => {
       const file = e.target.files[0];
-      e.target.value = '';
       if (!file) return;
+      const label = row.querySelector('.custom-name');
+      label.textContent = 'Reading ' + file.name + '…';
       try {
         const data = await readFile(file);
+        e.target.value = '';   // only after reading: Safari can lose the file when this is cleared first
         await loadCustom(name, file.name, data);
         try { await dbDo('readwrite', st => st.put({ name: file.name, data }, 'custom-' + name)); } catch (err) {}
       } catch (err) {
         // Safari is picky about audio files: say so, and suggest a format it likes.
-        row.querySelector('.custom-name').textContent = 'Could not use that file (' + ((err && err.name) || 'error') + '). Try an mp3 or m4a.';
+        e.target.value = '';
+        label.textContent = 'Could not use that file (' + ((err && (err.name || err.message)) || 'error') + '). Try an mp3 or m4a.';
       }
     });
     row.querySelector('.use-builtin').addEventListener('click', async () => {
